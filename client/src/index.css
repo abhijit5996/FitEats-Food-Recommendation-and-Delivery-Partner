@@ -1,0 +1,290 @@
+@import "tailwindcss";
+
+/* Tailwind v4: define design tokens */
+@theme {
+  /* Color palette - Updated to match your requirements */
+  --color-background-primary: #0F172A;
+  --color-background-surface: #1E293B;
+  --color-accent-primary: #38BDF8;
+  --color-accent-secondary: #F43F5E;
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  
+  /* Font families */
+  --font-heading: 'Raleway', 'Space Grotesk', ui-sans-serif, system-ui;
+  --font-body: 'Roboto', 'Source Sans Pro', ui-sans-serif, system-ui;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    margin-top: 0;
+    letter-spacing: -0.025em;
+  }
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    transform: translateZ(0);
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    min-height: 2.25rem;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #38BDF8, #F43F5E);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #7DD3FC, #FB7185);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.4), 0 8px 10px -6px rgba(244, 63, 94, 0.4);
+  }
+  
+  .btn-secondary {
+    background-color: var(--color-accent-secondary);
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #FB7185;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.4);
+  }
+  
+  .btn-outline {
+    border: 2px solid var(--color-accent-primary);
+    color: var(--color-accent-primary);
+    background-color: transparent;
+  }
+  
+  .btn-outline:hover {
+    background-color: var(--color-accent-primary);
+    color: white;
+  }
+  
+  /* Specific styles for food card buttons - UPDATED */
+  .btn-food-card {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    min-height: 2.75rem;
+    min-width: 8rem;
+    flex: 1;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+  .container-custom {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .card {
+    background-color: var(--color-background-surface);
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--color-background-surface);
+    border: 1px solid #374151;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    color: var(--color-text-primary);
+  }
+  
+  .input-field:focus {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+    border-color: transparent;
+  }
+  
+  .section-padding {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background-image: linear-gradient(135deg, #38BDF8 0%, #F43F5E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .bg-gradient-premium {
+    background: linear-gradient(135deg, #38BDF8, #F43F5E);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-background-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #38BDF8, #F43F5E);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #7DD3FC, #FB7185);
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  .btn,
+  .card {
+    transition: none;
+  }
+  
+  .animate-float,
+  .animate-pulse-slow {
+    animation: none;
+  }
+}
+
+/* Responsive adjustments */
+@media (min-width: 640px) {
+  .container-custom {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+/* Ensure proper positioning for the mobile profile dropdown */
+@media (max-width: 767px) {
+  .md\\:hidden .relative {
+    position: relative;
+  }
+  
+  .md\\:hidden .absolute {
+    position: absolute;
+    right: 0;
+    top: 100%;
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 767px) {
+  .container-custom {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Adjust button size for mobile */
+  .btn-food-card {
+    min-width: 7rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+/* Mobile filter animation */
+@media (max-width: 1023px) {
+  .filter-panel {
+    transition: all 0.3s ease;
+  }
+  
+  /* Ensure the filter panel doesn't overlap with restaurant cards */
+  .container-custom {
+    position: relative;
+  }
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 1023px) {
+  .card {
+    margin-bottom: 1rem;
+  }
+}
