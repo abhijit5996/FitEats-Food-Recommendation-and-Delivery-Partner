@@ -5,49 +5,21 @@ import { useCart } from '../context/CartContext';
 import RecipeCard from '../components/RecipeCard';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import { motion } from 'framer-motion';
-import toast from 'react-hot-toast';
+import { Search, ArrowRight } from 'lucide-react';
+import { ImageWithFallback } from '../components/figma/ImageWithFallback.jsx';
 
 // Import all food images
 import BajraKhichdi from '../assets/images/Bajra-Khichdi.jpg';
-import BesanChilla from '../assets/images/besan-chilla.jpg';
-import ChannaSaag from '../assets/images/Channa-Saag.jpg';
-import DahiKeKebab from '../assets/images/Dahi_Ke_Kebab.jpg';
-import DalKhichdi from '../assets/images/Dal-Khichdi.jpg';
-import EggCurry from '../assets/images/egg-curry.jpg';
-import GrilledPaneerTikka from '../assets/images/grilled paneer tikka.jpg';
-import GujaratiMethiThepla from '../assets/images/Gujarati-Methi-Thepla.jpg';
-import IdliSambar from '../assets/images/Idli-and-Sambar.jpg';
-import KadaiPaneer from '../assets/images/Kadai-Paneer.jpg';
-import KetoButterChicken from '../assets/images/keto-butter-chicken.jpg';
-import KhamanDhokla from '../assets/images/khaman-dhokla.jpg';
-import Kheer from '../assets/images/Kheer.jpg';
-import LaukiChanaDal from '../assets/images/lauki-chana-dal.jpg';
-import MasalaChai from '../assets/images/Masala-Chai.jpg';
-import MasalaOats from '../assets/images/masala-oats-recipe.jpg';
-import MiletKhichdi from '../assets/images/milet-khichdi.jpg';
-import MoongDalHalwa from '../assets/images/moong-dal-halwa.jpg';
-import MutterMushroom from '../assets/images/mutter-mushroom.jpg';
-import NutrelaSoyChunkCurry from '../assets/images/Nutrela-soy-chunk-curry.jpg';
-import QuinoaUpma from '../assets/images/quinoa-upma.jpg';
-import RajmaChawal from '../assets/images/Rajma-chawal.jpg';
-import SaagPaneer from '../assets/images/Saag-Paneer-1.jpg';
-import SproutedMoongSalad from '../assets/images/Sprouted-moong-salad.jpg';
-import SproutedRagiDosa from '../assets/images/Sprouted-Ragi-Dosa_.jpg';
-import SweetPotatoChaat from '../assets/images/sweet-potato-chaat.jpg';
-import TandooriChickenSalad from '../assets/images/Tandoori-chicken-salad.jpg';
-import TandooriFishTikka from '../assets/images/Tandoori-Fish-tikka.jpg';
-import VegPulao from '../assets/images/veg-pulao.jpg';
-import VegThali from '../assets/images/veg-thali.jpg';
 
 const HomePage = () => {
   const { user } = useUser();
   const preferences = null;
-  
   const { addItem } = useCart();
   
   const [featuredFoods, setFeaturedFoods] = useState([]);
   const [recommendedRestaurants, setRecommendedRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   
   useEffect(() => {
     const fetchData = async () => {
@@ -67,435 +39,45 @@ const HomePage = () => {
           restaurant: 'Healthy Bites',
           restaurantId: 1,
         },
-        {
-          id: 2,
-          name: 'Besan Chilla',
-          description: 'Savory gram flour pancakes with herbs and spices.',
-          price: 120,
-          image: BesanChilla,
-          rating: 4.5,
-          reviewCount: 112,
-          isHealthy: true,
-          restaurant: 'Breakfast Corner',
-          restaurantId: 2,
-        },
-        {
-          id: 3,
-          name: 'Channa Saag',
-          description: 'Chickpeas cooked with spinach and traditional spices.',
-          price: 190,
-          image: ChannaSaag,
-          rating: 4.4,
-          reviewCount: 95,
-          isHealthy: true,
-          restaurant: 'North Indian Delights',
-          restaurantId: 3,
-        },
-        {
-          id: 4,
-          name: 'Dahi Ke Kebab',
-          description: 'Yogurt-based kebabs with a crispy exterior and soft interior.',
-          price: 220,
-          image: DahiKeKebab,
-          rating: 4.7,
-          reviewCount: 134,
-          isHealthy: false,
-          restaurant: 'Royal Cuisine',
-          restaurantId: 4,
-        },
-        {
-          id: 5,
-          name: 'Dal Khichdi',
-          description: 'Comforting lentil and rice porridge with ghee and spices.',
-          price: 150,
-          image: DalKhichdi,
-          rating: 4.6,
-          reviewCount: 178,
-          isHealthy: true,
-          restaurant: 'Comfort Foods',
-          restaurantId: 5,
-        },
-        {
-          id: 6,
-          name: 'Egg Curry',
-          description: 'Hard-boiled eggs in a rich and spicy gravy.',
-          price: 200,
-          image: EggCurry,
-          rating: 4.5,
-          reviewCount: 156,
-          isHealthy: false,
-          restaurant: 'Spice Route',
-          restaurantId: 6,
-        },
-        {
-          id: 7,
-          name: 'Grilled Paneer Tikka',
-          description: 'Marinated cottage cheese grilled to perfection.',
-          price: 240,
-          image: GrilledPaneerTikka,
-          rating: 4.8,
-          reviewCount: 210,
-          isHealthy: true,
-          restaurant: 'Tandoori Specials',
-          restaurantId: 7,
-        },
-        {
-          id: 8,
-          name: 'Gujarati Methi Thepla',
-          description: 'Fenugreek-flavored flatbread from Gujarat.',
-          price: 110,
-          image: GujaratiMethiThepla,
-          rating: 4.4,
-          reviewCount: 98,
-          isHealthy: true,
-          restaurant: 'Gujarati Thali',
-          restaurantId: 8,
-        },
-        {
-          id: 9,
-          name: 'Idli and Sambar',
-          description: 'Steamed rice cakes served with lentil stew and chutney.',
-          price: 130,
-          image: IdliSambar,
-          rating: 4.7,
-          reviewCount: 245,
-          isHealthy: true,
-          restaurant: 'South Indian Delights',
-          restaurantId: 9,
-        },
-        {
-          id: 10,
-          name: 'Kadai Paneer',
-          description: 'Spicy cottage cheese curry with capsicum and onions.',
-          price: 250,
-          image: KadaiPaneer,
-          rating: 4.8,
-          reviewCount: 312,
-          isHealthy: false,
-          restaurant: 'North Indian Delights',
-          restaurantId: 3,
-        },
-        {
-          id: 11,
-          name: 'Keto Butter Chicken',
-          description: 'Low-carb version of the classic butter chicken.',
-          price: 280,
-          image: KetoButterChicken,
-          rating: 4.6,
-          reviewCount: 145,
-          isHealthy: true,
-          restaurant: 'Keto Kitchen',
-          restaurantId: 10,
-        },
-        {
-          id: 12,
-          name: 'Khaman Dhokla',
-          description: 'Steamed savory chickpea flour cakes from Gujarat.',
-          price: 120,
-          image: KhamanDhokla,
-          rating: 4.5,
-          reviewCount: 187,
-          isHealthy: true,
-          restaurant: 'Gujarati Thali',
-          restaurantId: 8,
-        },
-        {
-          id: 13,
-          name: 'Kheer',
-          description: 'Traditional rice pudding with nuts and cardamom.',
-          price: 140,
-          image: Kheer,
-          rating: 4.9,
-          reviewCount: 276,
-          isHealthy: false,
-          restaurant: 'Sweet Tooth',
-          restaurantId: 11,
-        },
-        {
-          id: 14,
-          name: 'Lauki Chana Dal',
-          description: 'Bottle gourd cooked with split chickpeas and spices.',
-          price: 160,
-          image: LaukiChanaDal,
-          rating: 4.3,
-          reviewCount: 92,
-          isHealthy: true,
-          restaurant: 'Healthy Bites',
-          restaurantId: 1,
-        },
-        {
-          id: 15,
-          name: 'Masala Chai',
-          description: 'Spiced Indian tea with milk and aromatic spices.',
-          price: 60,
-          image: MasalaChai,
-          rating: 4.8,
-          reviewCount: 345,
-          isHealthy: false,
-          restaurant: 'Chai Point',
-          restaurantId: 12,
-        },
-        {
-          id: 16,
-          name: 'Masala Oats',
-          description: 'Spiced oats with vegetables and herbs.',
-          price: 130,
-          image: MasalaOats,
-          rating: 4.4,
-          reviewCount: 118,
-          isHealthy: true,
-          restaurant: 'Healthy Bites',
-          restaurantId: 1,
-        },
-        {
-          id: 17,
-          name: 'Milet Khichdi',
-          description: 'Nutritious millet khichdi with vegetables.',
-          price: 170,
-          image: MiletKhichdi,
-          rating: 4.5,
-          reviewCount: 104,
-          isHealthy: true,
-          restaurant: 'Healthy Bites',
-          restaurantId: 1,
-        },
-        {
-          id: 18,
-          name: 'Moong Dal Halwa',
-          description: 'Sweet lentil pudding with ghee and nuts.',
-          price: 180,
-          image: MoongDalHalwa,
-          rating: 4.7,
-          reviewCount: 198,
-          isHealthy: false,
-          restaurant: 'Sweet Tooth',
-          restaurantId: 11,
-        },
-        {
-          id: 19,
-          name: 'Mutter Mushroom',
-          description: 'Peas and mushrooms in a creamy tomato gravy.',
-          price: 220,
-          image: MutterMushroom,
-          rating: 4.6,
-          reviewCount: 156,
-          isHealthy: true,
-          restaurant: 'Vegetarian Delight',
-          restaurantId: 13,
-        },
-        {
-          id: 20,
-          name: 'Nutrela Soy Chunk Curry',
-          description: 'Protein-rich soy chunks in a spicy curry.',
-          price: 190,
-          image: NutrelaSoyChunkCurry,
-          rating: 4.3,
-          reviewCount: 87,
-          isHealthy: true,
-          restaurant: 'Protein Hub',
-          restaurantId: 14,
-        },
-        {
-          id: 21,
-          name: 'Quinoa Upma',
-          description: 'Healthy quinoa preparation with vegetables and spices.',
-          price: 200,
-          image: QuinoaUpma,
-          rating: 4.5,
-          reviewCount: 112,
-          isHealthy: true,
-          restaurant: 'Healthy Bites',
-          restaurantId: 1,
-        },
-        {
-          id: 22,
-          name: 'Rajma Chawal',
-          description: 'Kidney bean curry served with steamed rice.',
-          price: 180,
-          image: RajmaChawal,
-          rating: 4.8,
-          reviewCount: 267,
-          isHealthy: true,
-          restaurant: 'North Indian Delights',
-          restaurantId: 3,
-        },
-        {
-          id: 23,
-          name: 'Saag Paneer',
-          description: 'Spinach curry with cottage cheese cubes.',
-          price: 230,
-          image: SaagPaneer,
-          rating: 4.7,
-          reviewCount: 201,
-          isHealthy: true,
-          restaurant: 'North Indian Delights',
-          restaurantId: 3,
-        },
-        {
-          id: 24,
-          name: 'Sprouted Moong Salad',
-          description: 'Healthy salad with sprouted mung beans and vegetables.',
-          price: 150,
-          image: SproutedMoongSalad,
-          rating: 4.6,
-          reviewCount: 134,
-          isHealthy: true,
-          restaurant: 'Salad Bar',
-          restaurantId: 15,
-        },
-        {
-          id: 25,
-          name: 'Sprouted Ragi Dosa',
-          description: 'Fermented crepe made with sprouted ragi flour.',
-          price: 160,
-          image: SproutedRagiDosa,
-          rating: 4.4,
-          reviewCount: 98,
-          isHealthy: true,
-          restaurant: 'South Indian Delights',
-          restaurantId: 9,
-        },
-        {
-          id: 26,
-          name: 'Sweet Potato Chaat',
-          description: 'Spicy and tangy sweet potato street food.',
-          price: 140,
-          image: SweetPotatoChaat,
-          rating: 4.5,
-          reviewCount: 123,
-          isHealthy: true,
-          restaurant: 'Street Food Corner',
-          restaurantId: 16,
-        },
-        {
-          id: 27,
-          name: 'Tandoori Chicken Salad',
-          description: 'Grilled chicken with fresh vegetables and dressing.',
-          price: 260,
-          image: TandooriChickenSalad,
-          rating: 4.6,
-          reviewCount: 178,
-          isHealthy: true,
-          restaurant: 'Salad Bar',
-          restaurantId: 15,
-        },
-        {
-          id: 28,
-          name: 'Tandoori Fish Tikka',
-          description: 'Marinated fish grilled in tandoor.',
-          price: 320,
-          image: TandooriFishTikka,
-          rating: 4.7,
-          reviewCount: 156,
-          isHealthy: true,
-          restaurant: 'Coastal Cuisine',
-          restaurantId: 17,
-        },
-        {
-          id: 29,
-          name: 'Veg Pulao',
-          description: 'Fragrant rice cooked with vegetables and spices.',
-          price: 170,
-          image: VegPulao,
-          rating: 4.5,
-          reviewCount: 189,
-          isHealthy: true,
-          restaurant: 'Rice Bowl',
-          restaurantId: 18,
-        },
-        {
-          id: 30,
-          name: 'Veg Thali',
-          description: 'Complete meal with various dishes, bread, rice, and dessert.',
-          price: 280,
-          image: VegThali,
-          rating: 4.8,
-          reviewCount: 312,
-          isHealthy: true,
-          restaurant: 'Thali House',
-          restaurantId: 19,
-        }
       ];
       
       const sampleRestaurants = [
         {
-        id: 1,
-        name: 'Green Leaf Bistro',
-        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80',
-        healthFocused: true,
-        rating: 4.7,
-        reviewCount: 328,
-        location: 'Koramangala, Bangalore',
-        deliveryTime: '25-35 min',
-        distance: '1.2 km',
-        cuisines: ['Healthy', 'Salads', 'Continental'],
-        dietaryOptions: ['Vegan', 'Gluten-Free', 'Low-Carb'],
-      },
-      {
-        id: 2,
-        name: 'Spice Junction',
-        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-        healthFocused: false,
-        rating: 4.5,
-        reviewCount: 512,
-        location: 'Indiranagar, Bangalore',
-        deliveryTime: '30-40 min',
-        distance: '2.5 km',
-        cuisines: ['North Indian', 'Mughlai', 'Biryani'],
-        dietaryOptions: ['Vegetarian'],
-      },
-      {
-        id: 3,
-        name: 'Coastal Delights',
-        image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80',
-        healthFocused: false,
-        rating: 4.3,
-        reviewCount: 287,
-        location: 'Whitefield, Bangalore',
-        deliveryTime: '35-45 min',
-        distance: '3.8 km',
-        cuisines: ['South Indian', 'Seafood', 'Coastal'],
-        dietaryOptions: ['Vegetarian', 'Non-Vegetarian'],
-      },
-      {
-        id: 4,
-        name: 'Fitness Bowl',
-        image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1480&q=80',
-        healthFocused: true,
-        rating: 4.6,
-        reviewCount: 198,
-        location: 'HSR Layout, Bangalore',
-        deliveryTime: '20-30 min',
-        distance: '1.5 km',
-        cuisines: ['Healthy', 'Bowls', 'Smoothies'],
-        dietaryOptions: ['Vegan', 'Gluten-Free', 'Keto', 'High-Protein'],
-      },
-      {
-        id: 5,
-        name: 'Tandoori Nights',
-        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-        healthFocused: false,
-        rating: 4.4,
-        reviewCount: 356,
-        location: 'Jayanagar, Bangalore',
-        deliveryTime: '30-45 min',
-        distance: '4.2 km',
-        cuisines: ['North Indian', 'Kebabs', 'Curry'],
-        dietaryOptions: ['Vegetarian', 'Non-Vegetarian'],
-      },
-      {
-        id: 6,
-        name: 'Diabetic Delights',
-        image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1480&q=80',
-        healthFocused: true,
-        rating: 4.5,
-        reviewCount: 127,
-        location: 'JP Nagar, Bangalore',
-        deliveryTime: '25-35 min',
-        distance: '2.8 km',
-        cuisines: ['Healthy', 'Diabetic-Friendly', 'Low-Sugar'],
-        dietaryOptions: ['Diabetic-Friendly', 'Low-Carb', 'Sugar-Free'],
-      },
+          id: 1,
+          name: 'Bella Vista',
+          image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop',
+          rating: 4.8,
+          reviewCount: 328,
+          location: 'Italian Restaurant',
+          deliveryTime: '30-40',
+          distance: '2.5',
+          cuisines: ['Italian', 'Pizza', 'Pasta'],
+          isHealthFocused: false,
+        },
+        {
+          id: 2,
+          name: 'Spice Garden',
+          image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop',
+          rating: 4.6,
+          reviewCount: 284,
+          location: 'Indian Restaurant',
+          deliveryTime: '25-35',
+          distance: '1.8',
+          cuisines: ['Indian', 'Curry', 'Biryani'],
+          isHealthFocused: false,
+        },
+        {
+          id: 3,
+          name: 'Ocean Breeze',
+          image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400&h=300&fit=crop',
+          rating: 4.7,
+          reviewCount: 196,
+          location: 'Seafood Restaurant',
+          deliveryTime: '35-45',
+          distance: '3.2',
+          cuisines: ['Seafood', 'Fish', 'Sushi'],
+          isHealthFocused: true,
+        },
       ];
       
       if (preferences) {
@@ -532,7 +114,32 @@ const HomePage = () => {
     fetchData();
   }, [preferences]);
   
-  // Removed duplicate handleAddToCart function
+  // Filter restaurants based on search query
+  const filteredRestaurants = recommendedRestaurants.filter((r) =>
+    r.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
+  // Food categories data
+  const categories = [
+    { name: 'Pizza', count: 25, image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200&h=200&fit=crop' },
+    { name: 'Broast', count: 18, image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=200&h=200&fit=crop' },
+    { name: 'Chicken', count: 32, image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=200&h=200&fit=crop' },
+    { name: 'Burgers', count: 22, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop' },
+    { name: 'Shakes', count: 15, image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200&h=200&fit=crop' },
+    { name: 'Sandwiches', count: 19, image: 'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=200&h=200&fit=crop' },
+    { name: 'Pasta', count: 28, image: 'https://images.unsplash.com/photo-1621996346565-e3dbc353d364?w=200&h=200&fit=crop' },
+    { name: 'Desserts', count: 21, image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200&h=200&fit=crop' },
+  ];
+
+  // Popular restaurant logos
+  const restaurantLogos = [
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop',
+    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=60&h=60&fit=crop',
+    'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=60&h=60&fit=crop',
+    'https://images.unsplash.com/photo-1544148103-0773bf10d330?w=60&h=60&fit=crop',
+    'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=60&h=60&fit=crop',
+    'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=60&h=60&fit=crop',
+  ];
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -553,55 +160,185 @@ const HomePage = () => {
   };
   
   return (
-    <div className="py-8">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-[#0F172A] to-[#1E293B]">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#38BDF8]/20 to-[#F43F5E]/20 z-0"></div>
-        <div className="container-custom relative z-10">
-          <motion.div 
-            className="max-w-2xl"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#F1F5F9]">
-              Personalized Food Ordering for Your <span className="bg-gradient-to-r from-[#38BDF8] to-[#F43F5E] bg-clip-text text-transparent">Health & Taste</span>
-            </h1>
-            <p className="text-xl mb-8 text-[#94A3B8]">Order food that matches your preferences and dietary needs from the best restaurants.</p>
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-              <Link to="/restaurants" className="btn btn-primary px-6 py-3 text-lg font-semibold">
-                Browse Restaurants
-              </Link>
-              {!user && (
-                <Link to="/register" className="btn btn-outline px-6 py-3 text-lg font-semibold">
-                  Sign Up for Personalized Recommendations
-                </Link>
-              )}
-            </div>
-          </motion.div>
+      <section className="relative py-20 overflow-hidden bg-[#1a1a2e]">
+        {/* Background with wave */}
+        <div className="absolute inset-0">
+          <svg className="absolute bottom-0 w-full h-32" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="currentColor" className="text-[#2c2c54]"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="currentColor" className="text-[#2c2c54]"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="currentColor" className="text-[#2c2c54]"></path>
+          </svg>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-8"
+            >
+              <div className="inline-block bg-[#ff6b35] text-white px-4 py-2 rounded-full text-sm font-medium">
+                Easy way to order your food
+              </div>
+              
+              <h1 className="text-4xl lg:text-6xl font-bold leading-tight text-white">
+                Order Healthy And Fresh Food Any Time
+              </h1>
+              
+              <p className="text-lg text-gray-300 max-w-lg leading-relaxed">
+                Italian food makes people think of big family dinners. So you may want to position your restaurant as a place to bring the whole family.
+              </p>
+
+              {/* Search Bar */}
+              <div className="flex max-w-md">
+                <input
+                  type="text"
+                  placeholder="Search restaurants..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full p-3 rounded-l-lg border-0 bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                />
+                <button className="bg-[#ffc107] text-[#1a1a2e] px-6 py-3 rounded-r-lg font-medium hover:bg-[#e6ac00] transition-colors">
+                  <Search className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Popular Restaurants */}
+              <div className="space-y-4">
+                <p className="text-sm font-medium text-gray-300">Popular Restaurant</p>
+                <div className="flex space-x-3">
+                  {restaurantLogos.map((logo, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.1 * index, duration: 0.3 }}
+                      className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-600 hover:border-[#ffc107] transition-colors cursor-pointer"
+                    >
+                      <ImageWithFallback
+                        src={logo}
+                        alt={`Restaurant ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right Content - Food Image */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative flex justify-center"
+            >
+              <div className="relative">
+                {/* Main Pizza Image */}
+                <div className="w-80 h-80 rounded-full overflow-hidden border-4 border-[#ffc107] shadow-2xl">
+                  <ImageWithFallback
+                    src="https://images.unsplash.com/photo-1563273941-b3d0e0129ec7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJchwxfHxwaXp6YSUyMGluZ3JlZGllbnRzJTIwZnJlc2glMjBiYXNpbCUyMHRvbWF0b2VzfGVufDF8fHx8MTc1NzY5NDkwMHww&ixlib=rb-4.1.0&q=80&w=1080"
+                    alt="Delicious Pizza"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Floating ingredients */}
+                <motion.div
+                  animate={{ y: [-10, 10, -10] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute -top-4 -left-4 w-16 h-16 bg-red-500 rounded-full flex items-center justify-center shadow-lg text-2xl"
+                >
+                  🍅
+                </motion.div>
+                <motion.div
+                  animate={{ y: [10, -10, 10] }}
+                  transition={{ duration: 2.5, repeat: Infinity }}
+                  className="absolute top-4 -right-8 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg text-xl"
+                >
+                  🌿
+                </motion.div>
+                <motion.div
+                  animate={{ y: [-5, 15, -5] }}
+                  transition={{ duration: 3.5, repeat: Infinity }}
+                  className="absolute -bottom-2 left-8 w-14 h-14 bg-purple-500 rounded-full flex items-center justify-center shadow-lg text-xl"
+                >
+                  🍄
+                </motion.div>
+                <motion.div
+                  animate={{ y: [15, -5, 15] }}
+                  transition={{ duration: 2.8, repeat: Infinity }}
+                  className="absolute bottom-8 -right-6 w-10 h-10 bg-black rounded-full flex items-center justify-center shadow-lg text-lg"
+                >
+                  🫒
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
-      
+
+      {/* Categories Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <div className="inline-block bg-[#ffc107] text-[#1a1a2e] px-4 py-2 rounded-full text-sm font-bold mb-4">
+              TOP FOODS
+            </div>
+            <h2 className="text-4xl font-bold text-[#1a1a2e] mb-4">Our Categories</h2>
+          </div>
+
+          {/* Categories Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {categories.map((category, index) => (
+              <motion.div
+                key={category.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow cursor-pointer group"
+              >
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden group-hover:scale-110 transition-transform">
+                  <ImageWithFallback
+                    src={category.image}
+                    alt={category.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-[#1a1a2e] mb-2">{category.name}</h3>
+                <p className="text-gray-500 text-sm">{category.count} items</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Featured Foods Section */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="flex justify-between items-center mb-8">
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center mb-12">
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-2xl md:text-3xl font-bold text-[#F1F5F9]"
+              className="text-3xl md:text-4xl font-bold text-[#1a1a2e]"
             >
               {preferences ? 'Recommended for You' : 'Featured Foods'}
             </motion.h2>
-            <Link to="/foods" className="text-[#38BDF8] hover:text-[#38BDF8]/80 font-medium">
-              View All
+            <Link to="/foods" className="text-[#ffc107] hover:text-[#e6ac00] font-medium flex items-center">
+              View All <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
           </div>
           
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#38BDF8]"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ffc107]"></div>
             </div>
           ) : (
             <motion.div 
@@ -609,104 +346,33 @@ const HomePage = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             >
               {featuredFoods.slice(0, 6).map(food => (
                 <motion.div key={food.id} variants={itemVariants}>
-                  <RecipeCard 
-                    food={food}
-                  />
+                  <RecipeCard food={food} />
                 </motion.div>
               ))}
             </motion.div>
           )}
         </div>
       </section>
-      
-      {/* How It Works Section */}
-      <section className="section-padding bg-[#1E293B]">
-        <div className="container-custom">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-2xl md:text-3xl font-bold text-[#F1F5F9] text-center mb-12"
-          >
-            How ZestyLife Works
-          </motion.h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="card p-6 text-center"
-            >
-              <div className="bg-[#38BDF8]/20 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-[#38BDF8] text-2xl font-bold">1</span>
-              </div>
-              <h3 className="text-xl font-semibold text-[#F1F5F9] mb-2">Share Your Preferences</h3>
-              <p className="text-[#94A3B8]">
-                Tell us about your dietary needs, health conditions, and food preferences during registration.
-              </p>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="card p-6 text-center"
-            >
-              <div className="bg-[#38BDF8]/20 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-[#38BDF8] text-2xl font-bold">2</span>
-              </div>
-              <h3 className="text-xl font-semibold text-[#F1F5F9] mb-2">Get Personalized Recommendations</h3>
-              <p className="text-[#94A3B8]">
-                We'll suggest foods and restaurants that match your unique preferences and dietary requirements.
-              </p>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="card p-6 text-center"
-            >
-              <div className="bg-[#38BDF8]/20 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-[#38BDF8] text-2xl font-bold">3</span>
-              </div>
-              <h3 className="text-xl font-semibold text-[#F1F5F9] mb-2">Order or Cook at Home</h3>
-              <p className="text-[#94A3B8]">
-                Order from our partner restaurants or access recipes to prepare healthy meals at home.
-              </p>
-            </motion.div>
+
+      {/* Popular Restaurants Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <div className="inline-block bg-[#ffc107] text-[#1a1a2e] px-4 py-2 rounded-full text-sm font-bold mb-4">
+              TOP RESTAURANTS
+            </div>
+            <h2 className="text-4xl font-bold text-[#1a1a2e] mb-4">Popular Restaurant</h2>
           </div>
-        </div>
-      </section>
-      
-      {/* Recommended Restaurants Section */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="flex justify-between items-center mb-8">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-2xl md:text-3xl font-bold text-[#F1F5F9]"
-            >
-              {preferences ? 'Restaurants for You' : 'Popular Restaurants'}
-            </motion.h2>
-            <Link to="/restaurants" className="text-[#38BDF8] hover:text-[#38BDF8]/80 font-medium">
-              View All
-            </Link>
-          </div>
-          
+
+          {/* Restaurants Grid */}
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#38BDF8]"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ffc107]"></div>
             </div>
           ) : (
             <motion.div 
@@ -714,9 +380,9 @@ const HomePage = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="grid md:grid-cols-3 gap-8"
             >
-              {recommendedRestaurants.map(restaurant => (
+              {filteredRestaurants.map((restaurant, index) => (
                 <motion.div key={restaurant.id} variants={itemVariants}>
                   <RestaurantCard restaurant={restaurant} />
                 </motion.div>
@@ -727,13 +393,13 @@ const HomePage = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="section-padding bg-gradient-to-r from-[#38BDF8] to-[#F43F5E]">
-        <div className="container-custom text-center">
+      <section className="py-20 bg-gradient-to-r from-[#ffc107] to-[#ff6b35]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-2xl md:text-3xl font-bold mb-4 text-white"
+            className="text-3xl md:text-4xl font-bold mb-6 text-[#1a1a2e]"
           >
             Ready to Eat Healthier?
           </motion.h2>
@@ -742,9 +408,9 @@ const HomePage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-xl mb-8 max-w-2xl mx-auto text-white/90"
+            className="text-xl mb-10 max-w-2xl mx-auto text-[#1a1a2e]"
           >
-            Join ZestyLife today and discover food that's not just delicious but also good for your health.
+            Join FitEats today and discover food that's not just delicious but also good for your health.
           </motion.p>
           {!user ? (
             <motion.div 
@@ -752,12 +418,12 @@ const HomePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4"
+              className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6"
             >
-              <Link to="/register" className="btn bg-white text-[#38BDF8] hover:bg-gray-100 px-6 py-3 text-lg font-semibold">
+              <Link to="/register" className="bg-[#1a1a2e] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-colors">
                 Sign Up Now
               </Link>
-              <Link to="/login" className="btn bg-transparent border-2 border-white text-white hover:bg-white hover:text-[#38BDF8] px-6 py-3 text-lg font-semibold">
+              <Link to="/login" className="border-2 border-[#1a1a2e] text-[#1a1a2e] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#1a1a2e] hover:text-white transition-colors">
                 Login
               </Link>
             </motion.div>
@@ -768,7 +434,7 @@ const HomePage = () => {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <Link to="/preferences" className="btn bg-white text-[#38BDF8] hover:bg-gray-100 px-6 py-3 text-lg font-semibold">
+              <Link to="/preferences" className="bg-[#1a1a2e] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-colors">
                 Update Your Preferences
               </Link>
             </motion.div>

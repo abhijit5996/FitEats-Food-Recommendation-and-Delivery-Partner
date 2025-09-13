@@ -1,18 +1,49 @@
 @import "tailwindcss";
 
-/* Tailwind v4: define design tokens */
+/* Tailwind v4: define design tokens - Updated to match global.css */
 @theme {
-  /* Color palette - Updated to match your requirements */
-  --color-background-primary: #0F172A;
-  --color-background-surface: #1E293B;
-  --color-accent-primary: #38BDF8;
-  --color-accent-secondary: #F43F5E;
-  --color-text-primary: #F1F5F9;
-  --color-text-secondary: #94A3B8;
+  /* Color palette - Aligned with global.css */
+  --color-background: #1a1a2e;
+  --color-foreground: #ffffff;
+  --color-card: #ffffff;
+  --color-card-foreground: #1a1a2e;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #1a1a2e;
+  --color-primary: #ffc107;
+  --color-primary-foreground: #1a1a2e;
+  --color-secondary: #ff6b35;
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #f8f9fa;
+  --color-muted-foreground: #6c757d;
+  --color-accent: #ffc107;
+  --color-accent-foreground: #1a1a2e;
+  --color-destructive: #dc3545;
+  --color-destructive-foreground: #ffffff;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-input: transparent;
+  --color-input-background: #ffffff;
+  --color-switch-background: #cbced4;
+  --color-ring: #ffc107;
+  --color-chart-1: #ffc107;
+  --color-chart-2: #ff6b35;
+  --color-chart-3: #28a745;
+  --color-chart-4: #17a2b8;
+  --color-chart-5: #6f42c1;
+  --radius: 0.5rem;
   
   /* Font families */
-  --font-heading: 'Raleway', 'Space Grotesk', ui-sans-serif, system-ui;
-  --font-body: 'Roboto', 'Source Sans Pro', ui-sans-serif, system-ui;
+  --font-heading: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  
+  /* Sidebar colors from global.css */
+  --color-sidebar: #1a1a2e;
+  --color-sidebar-foreground: #ffffff;
+  --color-sidebar-primary: #ffc107;
+  --color-sidebar-primary-foreground: #1a1a2e;
+  --color-sidebar-accent: #2c2c54;
+  --color-sidebar-accent-foreground: #ffffff;
+  --color-sidebar-border: rgba(255, 255, 255, 0.1);
+  --color-sidebar-ring: #ffc107;
 }
 
 @layer base {
@@ -24,11 +55,12 @@
   
   html {
     scroll-behavior: smooth;
+    font-size: 16px;
   }
   
   body {
-    background-color: var(--color-background-primary);
-    color: var(--color-text-primary);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
     font-family: var(--font-body);
     line-height: 1.6;
     margin: 0;
@@ -37,9 +69,93 @@
   
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    font-weight: 700;
+    font-weight: 500;
     margin-top: 0;
     letter-spacing: -0.025em;
+    color: var(--color-foreground);
+  }
+  
+  /* Text styles for better readability */
+  p, li, span {
+    color: var(--color-foreground);
+  }
+  
+  /* Card text styling - uses dark colors on white card background */
+  .card h1, 
+  .card h2, 
+  .card h3, 
+  .card h4, 
+  .card h5, 
+  .card h6 {
+    color: var(--color-card-foreground) !important; /* Dark text on white card */
+    font-weight: 600;
+  }
+  
+  .card p, 
+  .card li, 
+  .card span,
+  .card div {
+    color: var(--color-card-foreground) !important; /* Dark text on white card */
+  }
+  
+  /* Muted text inside cards */
+  .card .text-muted {
+    color: var(--color-muted-foreground) !important; /* Gray text for muted content */
+  }
+  
+  /* Step elements styling */
+  .card .step, 
+  .card .step p {
+    color: var(--color-card-foreground) !important;
+    font-weight: 500;
+  }
+  
+  /* Step number circles */
+  .card .step-number {
+    background-color: var(--color-primary) !important;
+    color: var(--color-primary-foreground) !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Visual elements like checkmarks and bullets */
+  .card .checkmark,
+  .card .bullet {
+    color: var(--color-primary) !important;
+    font-weight: 600;
+  }
+  
+  .text-muted {
+    color: var(--color-muted-foreground) !important;
+  }
+  
+  .text-disabled {
+    color: #a1a5b7 !important;
+  }
+  
+  /* Disabled text inside cards */
+  .card .text-disabled {
+    color: #8e95a9 !important;
+  }
+  
+  /* List items in cards */
+  .card ul li,
+  .card ol li {
+    color: var(--color-card-foreground) !important;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Nutrition info styling */
+  .nutrition-value {
+    color: var(--color-primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+  }
+  
+  .nutrition-label {
+    color: var(--color-card-foreground) !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    text-transform: capitalize;
   }
 }
 
@@ -48,53 +164,55 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 500;
     transition: all 0.3s ease;
     transform: translateZ(0);
     border: none;
     cursor: pointer;
-    font-size: 0.875rem;
-    min-height: 2.25rem;
+    font-size: 1rem;
+    min-height: 3rem;
   }
   
   .btn-primary {
-    background: linear-gradient(135deg, #38BDF8, #F43F5E);
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+    box-shadow: 0 4px 6px rgba(255, 193, 7, 0.25);
   }
   
   .btn-primary:hover {
-    background: linear-gradient(135deg, #7DD3FC, #FB7185);
+    background-color: #e6ac00;
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.4), 0 8px 10px -6px rgba(244, 63, 94, 0.4);
+    box-shadow: 0 10px 25px -5px rgba(255, 193, 7, 0.4);
   }
   
   .btn-secondary {
-    background-color: var(--color-accent-secondary);
-    color: white;
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-foreground);
+    box-shadow: 0 4px 6px rgba(255, 107, 53, 0.25);
   }
   
   .btn-secondary:hover {
-    background-color: #FB7185;
+    background-color: #e55a2b;
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.4);
+    box-shadow: 0 10px 25px -5px rgba(255, 107, 53, 0.4);
   }
   
   .btn-outline {
-    border: 2px solid var(--color-accent-primary);
-    color: var(--color-accent-primary);
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
     background-color: transparent;
   }
   
   .btn-outline:hover {
-    background-color: var(--color-accent-primary);
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
   }
   
-  /* Specific styles for food card buttons - UPDATED */
+  /* Food card buttons */
   .btn-food-card {
-    padding: 0.625rem 1.25rem;
+    padding: 0.75rem 1rem;
     font-size: 0.875rem;
     min-height: 2.75rem;
     min-width: 8rem;
@@ -112,33 +230,39 @@
   }
   
   .card {
-    background-color: var(--color-background-surface);
-    border-radius: 1rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+    background-color: var(--color-card);
+    border-radius: 1.25rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-border);
+    color: var(--color-card-foreground);
   }
   
   .card:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     transform: translateY(-5px);
   }
   
   .input-field {
     width: 100%;
     padding: 0.75rem 1rem;
-    background-color: var(--color-background-surface);
-    border: 1px solid #374151;
-    border-radius: 0.5rem;
+    background-color: var(--color-input-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
     transition: all 0.2s ease;
-    color: var(--color-text-primary);
+    color: var(--color-card-foreground);
+    font-weight: 500;
   }
   
   .input-field:focus {
-    outline: 2px solid var(--color-accent-primary);
+    outline: 2px solid var(--color-ring);
     outline-offset: 2px;
     border-color: transparent;
+  }
+  
+  .input-field::placeholder {
+    color: var(--color-muted-foreground);
   }
   
   .section-padding {
@@ -149,7 +273,7 @@
 
 @layer utilities {
   .text-gradient {
-    background-image: linear-gradient(135deg, #38BDF8 0%, #F43F5E 100%);
+    background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -164,7 +288,26 @@
   }
   
   .bg-gradient-premium {
-    background: linear-gradient(135deg, #38BDF8, #F43F5E);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  }
+  
+  /* Dark card background gradient using sidebar colors */
+  .bg-gradient-dark {
+    background: linear-gradient(135deg, var(--color-sidebar-accent) 0%, #40407a 100%);
+  }
+  
+  /* Text color utilities */
+  .text-light {
+    color: var(--color-foreground) !important;
+  }
+  
+  .text-white {
+    color: #ffffff !important;
+  }
+  
+  /* Additional utility for card foreground text */
+  .text-card {
+    color: var(--color-card-foreground) !important;
   }
 }
 
@@ -192,23 +335,23 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--color-background-surface);
+  background-color: var(--color-muted);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #38BDF8, #F43F5E);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #7DD3FC, #FB7185);
+  background: linear-gradient(135deg, #e6ac00, #e55a2b);
 }
 
 /* Focus styles for accessibility */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible {
-  outline: 2px solid var(--color-accent-primary);
+  outline: 2px solid var(--color-ring);
   outline-offset: 2px;
 }
 
@@ -243,18 +386,6 @@ input:focus-visible {
     padding-bottom: 6rem;
   }
 }
-/* Ensure proper positioning for the mobile profile dropdown */
-@media (max-width: 767px) {
-  .md\\:hidden .relative {
-    position: relative;
-  }
-  
-  .md\\:hidden .absolute {
-    position: absolute;
-    right: 0;
-    top: 100%;
-  }
-}
 
 /* Mobile responsive adjustments */
 @media (max-width: 767px) {
@@ -266,25 +397,29 @@ input:focus-visible {
   /* Adjust button size for mobile */
   .btn-food-card {
     min-width: 7rem;
-    padding: 0.5rem 1rem;
+    padding: 0.625rem 0.875rem;
     font-size: 0.8rem;
   }
 }
-/* Mobile filter animation */
-@media (max-width: 1023px) {
-  .filter-panel {
-    transition: all 0.3s ease;
-  }
-  
-  /* Ensure the filter panel doesn't overlap with restaurant cards */
-  .container-custom {
-    position: relative;
-  }
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
-/* Ensure proper spacing on mobile */
-@media (max-width: 1023px) {
-  .card {
-    margin-bottom: 1rem;
-  }
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }

@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
-import toast from 'react-hot-toast';
 
 const RecipeCard = ({ food, showRestaurant }) => {
   const { addItem } = useCart();
@@ -17,7 +15,6 @@ const RecipeCard = ({ food, showRestaurant }) => {
     };
     
     addItem(itemToAdd);
-    // Don't call onAddToCart to avoid duplicate calls
   };
 
   // Create a URL-friendly slug from the food name
@@ -28,17 +25,14 @@ const RecipeCard = ({ food, showRestaurant }) => {
   };
 
   return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className="card overflow-hidden group"
-    >
+    <div className="card overflow-hidden bg-white">
       <div className="cursor-pointer">
         <Link to={`/recipe/${createSlug(food.name)}`}>
           <div className="relative overflow-hidden">
             <img 
               src={food.image} 
               alt={food.name}
-              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-48 object-cover"
             />
             {food.isHealthy && (
               <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
@@ -49,19 +43,19 @@ const RecipeCard = ({ food, showRestaurant }) => {
           
           <div className="p-4">
             <div className="flex justify-between items-start mb-2">
-              <h3 className="font-semibold text-white text-lg line-clamp-1">{food.name}</h3>
-              <span className="text-primary font-bold">₹{food.price}</span>
+              <h3 className="font-semibold text-[#1a1a2e] text-lg line-clamp-1">{food.name}</h3>
+              <span className="text-[#ffc107] font-bold">₹{food.price}</span>
             </div>
             
-            <p className="text-gray-300 text-sm mb-3 line-clamp-2">{food.description}</p>
+            <p className="text-[#6c757d] text-sm mb-3 line-clamp-2">{food.description}</p>
             
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <span className="text-yellow-400 mr-1">★</span>
-                <span className="text-white text-sm">{food.rating}</span>
-                <span className="text-gray-400 text-sm ml-1">({food.reviewCount})</span>
+                <span className="text-[#1a1a2e] text-sm">{food.rating}</span>
+                <span className="text-[#6c757d] text-sm ml-1">({food.reviewCount})</span>
               </div>
-              <span className="text-gray-400 text-sm">{food.restaurant}</span>
+              <span className="text-[#6c757d] text-sm">{food.restaurant}</span>
             </div>
           </div>
         </Link>
@@ -83,7 +77,7 @@ const RecipeCard = ({ food, showRestaurant }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

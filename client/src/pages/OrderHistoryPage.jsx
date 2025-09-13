@@ -112,7 +112,7 @@ const OrderHistoryPage = () => {
             >
               Try Again
             </button>
-          </div>
+            </div>
         </div>
       </div>
     );
@@ -141,7 +141,7 @@ const OrderHistoryPage = () => {
                   <select 
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="bg-white/5 border border-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="all">All Orders</option>
                     <option value="pending">Pending</option>

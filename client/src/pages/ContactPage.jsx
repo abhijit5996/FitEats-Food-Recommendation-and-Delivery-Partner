@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useUser } from '@clerk/clerk-react';
 
@@ -70,10 +70,10 @@ const ContactPage = () => {
   };
 
   const inputClass = (name) => 
-    `w-full px-4 py-3 bg-[#2c303a] border rounded-md text-white focus:outline-none focus:ring-2 transition-colors ${errors[name] ? 'border-red-500 focus:ring-red-400' : 'border-gray-600 focus:border-primary focus:ring-primary'}`;
+    `w-full px-4 py-3 bg-white/5 border rounded-md text-white focus:outline-none focus:ring-2 transition-colors ${errors[name] ? 'border-red-500 focus:ring-red-400' : 'border-gray-600 focus:border-primary focus:ring-primary'}`;
 
   return (
-    <div className="py-8">
+    <div className="py-12">
       <div className="container-custom">
         {/* Page Header */}
         <div className="mb-12 text-center">
@@ -154,7 +154,6 @@ const ContactPage = () => {
                   {[
                     { icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />, title: "Phone", lines: ["+91 98765 43210", "+91 12345 67890"] },
                     { icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />, title: "Email", lines: ["info@nutriorder.com", "support@nutriorder.com"] },
-                    // { icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />, title: "Address", lines: ["123 Food Street, Koramangala", "Bangalore, Karnataka 560034", "India"] },
                   ].map((item, index) => (
                     <div key={index} className="flex items-start">
                       <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">

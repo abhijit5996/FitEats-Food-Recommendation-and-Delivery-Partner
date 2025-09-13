@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 
 const FoodCard = ({ food, onAddToCart }) => {
@@ -26,12 +25,7 @@ const FoodCard = ({ food, onAddToCart }) => {
   };
   
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
-      className="card overflow-hidden"
-    >
+    <div className="card overflow-hidden bg-white">
       <div className="relative">
         <img 
           src={food.image} 
@@ -39,44 +33,38 @@ const FoodCard = ({ food, onAddToCart }) => {
           className="w-full h-48 object-cover"
         />
         {food.isHealthy && (
-          <motion.span 
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full"
-          >
+          <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
             Healthy Choice
-          </motion.span>
+          </span>
         )}
       </div>
       
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-white">{food.name}</h3>
-          <span className="text-primary font-bold">₹{food.price}</span>
+          <h3 className="text-lg font-semibold text-[#1a1a2e]">{food.name}</h3>
+          <span className="text-[#ffc107] font-bold">₹{food.price}</span>
         </div>
         
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">{food.description}</p>
+        <p className="text-[#6c757d] text-sm mb-4 line-clamp-2">{food.description}</p>
         
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-400">Quantity:</span>
-            <div className="flex items-center border border-gray-700 rounded-md bg-[#252A36]">
-              <motion.button 
-                whileTap={{ scale: 0.9 }}
+            <span className="text-sm text-[#6c757d]">Quantity:</span>
+            <div className="flex items-center border border-gray-300 rounded-md bg-white">
+              <button 
                 onClick={handleDecrement}
-                className="px-2 py-1 text-gray-400 hover:text-white transition-colors"
+                className="px-2 py-1 text-[#6c757d] hover:text-[#ffc107] transition-colors"
                 disabled={quantity <= 1}
               >
                 -
-              </motion.button>
-              <span className="px-2 py-1 text-white">{quantity}</span>
-              <motion.button 
-                whileTap={{ scale: 0.9 }}
+              </button>
+              <span className="px-2 py-1 text-[#1a1a2e]">{quantity}</span>
+              <button 
                 onClick={handleIncrement}
-                className="px-2 py-1 text-gray-400 hover:text-white transition-colors"
+                className="px-2 py-1 text-[#6c757d] hover:text-[#ffc107] transition-colors"
               >
                 +
-              </motion.button>
+              </button>
             </div>
           </div>
           
@@ -85,14 +73,14 @@ const FoodCard = ({ food, onAddToCart }) => {
               <svg 
                 key={i}
                 xmlns="http://www.w3.org/2000/svg" 
-                className={`h-4 w-4 ${i < Math.floor(food.rating || 0) ? 'text-yellow-400' : 'text-gray-600'}`} 
+                className={`h-4 w-4 ${i < Math.floor(food.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}`} 
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             ))}
-            <span className="text-xs text-gray-400 ml-1">({food.reviewCount || 0})</span>
+            <span className="text-xs text-[#6c757d] ml-1">({food.reviewCount || 0})</span>
           </div>
         </div>
         
@@ -108,7 +96,7 @@ const FoodCard = ({ food, onAddToCart }) => {
           </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
