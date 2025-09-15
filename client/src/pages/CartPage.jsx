@@ -1,6 +1,7 @@
+// src/pages/CartPage.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
+import { useUser, SignInButton } from '@clerk/clerk-react';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-hot-toast';
 import { endpoints, apiRequest } from '../config/api';
@@ -10,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const CartPage = () => {
   const { items, totalItems, totalAmount, updateQuantity, removeItem, clearCart, isLoading } = useCart();
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const navigate = useNavigate();
   
   const [checkoutStep, setCheckoutStep] = useState(0);
@@ -66,9 +67,8 @@ const CartPage = () => {
   
   const handleProceedToDelivery = () => {
     // Check if user is logged in
-    if (!user) {
-      // Navigate to login with redirect back to cart
-      navigate('/login', { state: { from: '/cart' } });
+    if (!isSignedIn) {
+      // Show login prompt instead of navigating directly
       return;
     }
     
@@ -86,9 +86,8 @@ const CartPage = () => {
     
     try {
       // First check if user is logged in
-      if (!user) {
+      if (!isSignedIn) {
         toast.error('Please login to place an order');
-        navigate('/login');
         return;
       }
 
@@ -461,12 +460,27 @@ const CartPage = () => {
                 </div>
                 
                 {checkoutStep === 0 && (
-                  <button 
-                    onClick={handleProceedToDelivery}
-                    className="btn btn-primary w-full py-3"
-                  >
-                    Proceed to Checkout
-                  </button>
+                  <>
+                    {!isSignedIn ? (
+                      <div className="bg-blue-900/20 border border-blue-700 rounded-lg p-4 mb-4">
+                        <p className="text-blue-200 text-sm mb-3">
+                          You need to log in to complete your order.
+                        </p>
+                        <SignInButton mode="modal" afterSignInUrl="/cart" afterSignUpUrl="/cart">
+                          <button className="btn btn-primary w-full py-2">
+                            Login to Order
+                          </button>
+                        </SignInButton>
+                      </div>
+                    ) : (
+                      <button 
+                        onClick={handleProceedToDelivery}
+                        className="btn btn-primary w-full py-3"
+                      >
+                        Proceed to Checkout
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </motion.div>

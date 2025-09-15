@@ -1,7 +1,16 @@
+// src/context/CartContext.jsx
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
 import { endpoints, apiRequest } from '../config/api';
+import {
+  getCartFromLocalStorage,
+  saveCartToLocalStorage,
+  clearLocalStorageCart,
+  addItemToLocalStorageCart,
+  updateItemQuantityInLocalStorage,
+  removeItemFromLocalStorageCart
+} from '../utils/cartUtils';
 
 const CartContext = createContext();
 
@@ -10,111 +19,75 @@ const initialState = {
   totalItems: 0,
   totalAmount: 0,
   isLoading: true,
-  orders: [], // Add orders to initial state
+  orders: [],
 };
 
 const cartReducer = (state, action) => {
   switch (action.type) {
     case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+
+    case 'LOAD_CART': {
+      const cart = action.payload || {};
       return {
         ...state,
-        isLoading: action.payload,
-      };
-      
-    case 'LOAD_CART':
-      return {
-        ...state,
-        items: action.payload.items || [],
-        totalItems: action.payload.totalItems || 0,
-        totalAmount: action.payload.totalAmount || 0,
+        items: cart.items || [],
+        totalItems: cart.totalItems || 0,
+        totalAmount: cart.totalAmount || 0,
         isLoading: false,
       };
-
-    case 'ADD_ITEM': {
-      const existingItemIndex = state.items.findIndex(
-        (item) => item.id === action.payload.id
-      );
-
-      if (existingItemIndex > -1) {
-        // Item exists, update quantity
-        const updatedItems = [...state.items];
-        updatedItems[existingItemIndex] = {
-          ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity + action.payload.quantity,
-        };
-
-        return {
-          ...state,
-          items: updatedItems,
-          totalItems: state.totalItems + action.payload.quantity,
-          totalAmount: state.totalAmount + (action.payload.price * action.payload.quantity),
-        };
-      } else {
-        // Add new item
-        return {
-          ...state,
-          items: [...state.items, action.payload],
-          totalItems: state.totalItems + action.payload.quantity,
-          totalAmount: state.totalAmount + (action.payload.price * action.payload.quantity),
-        };
-      }
     }
 
-    case 'UPDATE_QUANTITY': {
-      const { id, quantity } = action.payload;
-      const itemIndex = state.items.findIndex(item => item.id === id);
-
-      if (itemIndex === -1) return state;
-
-      const item = state.items[itemIndex];
-      const quantityDifference = quantity - item.quantity;
+    case 'ADD_ITEM': {
       const updatedItems = [...state.items];
-      
-      updatedItems[itemIndex] = {
-        ...item,
-        quantity,
-      };
+      const existing = updatedItems.find(item => item.id === action.payload.id);
+
+      if (existing) {
+        existing.quantity += action.payload.quantity || 1;
+      } else {
+        updatedItems.push({ ...action.payload, quantity: action.payload.quantity || 1 });
+      }
 
       return {
         ...state,
         items: updatedItems,
-        totalItems: state.totalItems + quantityDifference,
-        totalAmount: state.totalAmount + (item.price * quantityDifference),
+        totalItems: updatedItems.reduce((sum, i) => sum + i.quantity, 0),
+        totalAmount: updatedItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
+      };
+    }
+
+    case 'UPDATE_QUANTITY': {
+      const updatedItems = state.items.map(item =>
+        item.id === action.payload.id
+          ? { ...item, quantity: action.payload.quantity }
+          : item
+      );
+      return {
+        ...state,
+        items: updatedItems,
+        totalItems: updatedItems.reduce((sum, i) => sum + i.quantity, 0),
+        totalAmount: updatedItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
       };
     }
 
     case 'REMOVE_ITEM': {
-      const id = action.payload;
-      const existingItem = state.items.find(item => item.id === id);
-
-      if (!existingItem) return state;
-
+      const updatedItems = state.items.filter(item => item.id !== action.payload);
       return {
         ...state,
-        items: state.items.filter(item => item.id !== id),
-        totalItems: state.totalItems - existingItem.quantity,
-        totalAmount: state.totalAmount - (existingItem.price * existingItem.quantity),
+        items: updatedItems,
+        totalItems: updatedItems.reduce((sum, i) => sum + i.quantity, 0),
+        totalAmount: updatedItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
       };
     }
 
     case 'CLEAR_CART':
-      return {
-        ...initialState,
-        isLoading: false,
-        orders: state.orders, // Keep orders when clearing cart
-      };
-
-    case 'ADD_ORDER':
-      return {
-        ...state,
-        orders: [action.payload, ...state.orders],
-      };
+      return { ...state, items: [], totalItems: 0, totalAmount: 0 };
 
     case 'LOAD_ORDERS':
-      return {
-        ...state,
-        orders: action.payload,
-      };
+      return { ...state, orders: action.payload || [] };
+
+    case 'ADD_ORDER':
+      return { ...state, orders: [...state.orders, action.payload] };
 
     default:
       return state;
@@ -125,34 +98,36 @@ export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const { user, isLoaded } = useUser();
 
-  // Load cart from backend when user logs in
+  // Load cart from backend when user logs in, or localStorage when guest
   useEffect(() => {
-    const loadCartFromBackend = async () => {
-      if (isLoaded && user) {
+    const loadCart = async () => {
+      if (!isLoaded) return;
+
+      if (user) {
         try {
           dispatch({ type: 'SET_LOADING', payload: true });
           const cartData = await apiRequest(endpoints.cart.get(user.id), {
             credentials: 'include',
           });
-          dispatch({ type: 'LOAD_CART', payload: cartData });
+
+          dispatch({
+            type: 'LOAD_CART',
+            payload: cartData ?? { items: [], totalItems: 0, totalAmount: 0 },
+          });
         } catch (error) {
           console.error('Error loading cart from backend:', error);
           dispatch({ type: 'SET_LOADING', payload: false });
         }
-      } else if (!user) {
-        // If user is not logged in, load from localStorage
-        const savedCart = localStorage.getItem('cart');
+      } else {
+        const savedCart = getCartFromLocalStorage() ?? {
+          items: [],
+          totalItems: 0,
+          totalAmount: 0,
+        };
+
+        dispatch({ type: 'LOAD_CART', payload: savedCart });
+
         const savedOrders = localStorage.getItem('orders');
-        
-        if (savedCart) {
-          try {
-            const parsedCart = JSON.parse(savedCart);
-            dispatch({ type: 'LOAD_CART', payload: parsedCart });
-          } catch (error) {
-            console.error('Failed to parse cart from localStorage:', error);
-          }
-        }
-        
         if (savedOrders) {
           try {
             const parsedOrders = JSON.parse(savedOrders);
@@ -161,111 +136,94 @@ export const CartProvider = ({ children }) => {
             console.error('Failed to parse orders from localStorage:', error);
           }
         }
-        
+
         dispatch({ type: 'SET_LOADING', payload: false });
       }
     };
 
-    loadCartFromBackend();
+    loadCart();
   }, [user, isLoaded]);
 
-  // Sync cart to backend when user is logged in
+  // Sync cart to backend when logged in
   useEffect(() => {
     const syncCartToBackend = async () => {
-      if (user && !state.isLoading) {
-        try {
-          // First check if cart exists
-          try {
-            await apiRequest(endpoints.cart.get(user.id), {
-              credentials: 'include',
-            });
-          } catch (error) {
-            // If cart doesn't exist, sync all items individually
-            for (const item of state.items) {
-              await apiRequest(endpoints.cart.add(user.id), {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify({
-                  id: item.id,
-                  name: item.name,
-                  price: item.price,
-                  quantity: item.quantity,
-                  image: item.image,
-                  restaurantId: item.restaurantId,
-                  restaurantName: item.restaurantName
-                }),
-              });
-            }
-          }
-        } catch (error) {
-          console.error('Error syncing cart to backend:', error);
+      if (!user || state.isLoading) return;
+
+      try {
+        await apiRequest(endpoints.cart.get(user.id), {
+          credentials: 'include',
+        });
+      } catch (error) {
+        // If no backend cart, sync local items
+        for (const item of state.items) {
+          await apiRequest(endpoints.cart.add(user.id), {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(item),
+          });
         }
       }
     };
 
-    if (!state.isLoading) {
+    if (!state.isLoading && user) {
       syncCartToBackend();
     }
   }, [state.items, user, state.isLoading]);
 
-  // Save to localStorage when user is not logged in
+  // Save to localStorage when guest
   useEffect(() => {
     if (!user && !state.isLoading) {
-      localStorage.setItem('cart', JSON.stringify({
+      saveCartToLocalStorage({
         items: state.items,
         totalItems: state.totalItems,
         totalAmount: state.totalAmount,
-      }));
-      
-      localStorage.setItem('orders', JSON.stringify(state.orders));
+      });
+
+      if (state.orders.length > 0) {
+        localStorage.setItem('orders', JSON.stringify(state.orders));
+      }
     }
   }, [state.items, state.totalItems, state.totalAmount, state.orders, user, state.isLoading]);
 
+  // Cart actions
   const addItem = async (item) => {
     if (user) {
       try {
         await apiRequest(endpoints.cart.add(user.id), {
           method: 'POST',
           credentials: 'include',
-          body: JSON.stringify({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-            image: item.image,
-            restaurantId: item.restaurantId,
-            restaurantName: item.restaurantName
-          }),
+          body: JSON.stringify(item),
         });
 
         dispatch({ type: 'ADD_ITEM', payload: item });
-        toast.success(`${item.name} added to cart successfully!`, {
-          duration: 3000,
-          position: 'top-right',
-        });
+        toast.success(`${item.name} added to cart successfully!`);
       } catch (error) {
         console.error('Error adding item to cart:', error);
-        toast.error(error.message || 'Failed to add item to cart', {
-          duration: 3000,
-          position: 'top-right',
-        });
+        toast.error(error.message || 'Failed to add item to cart');
       }
     } else {
-      // If user is not logged in, just update local state
-      dispatch({ type: 'ADD_ITEM', payload: item });
-      toast.success(`${item.name} added to cart successfully!`, {
-        duration: 3000,
-        position: 'top-right',
-      });
+      const updatedCart = addItemToLocalStorageCart(item);
+      dispatch({ type: 'LOAD_CART', payload: updatedCart });
+      toast.success(`${item.name} added to cart successfully!`);
     }
   };
 
   const updateQuantity = async (id, quantity) => {
-    dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
+    if (user) {
+      dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
+    } else {
+      const updatedCart = updateItemQuantityInLocalStorage(id, quantity);
+      dispatch({ type: 'LOAD_CART', payload: updatedCart });
+    }
   };
 
   const removeItem = async (id) => {
-    dispatch({ type: 'REMOVE_ITEM', payload: id });
+    if (user) {
+      dispatch({ type: 'REMOVE_ITEM', payload: id });
+    } else {
+      const updatedCart = removeItemFromLocalStorageCart(id);
+      dispatch({ type: 'LOAD_CART', payload: updatedCart });
+    }
   };
 
   const clearCart = async () => {
@@ -279,9 +237,9 @@ export const CartProvider = ({ children }) => {
         console.error('Error clearing cart from backend:', error);
       }
     } else {
-      localStorage.removeItem('cart');
+      clearLocalStorageCart();
     }
-    
+
     dispatch({ type: 'CLEAR_CART' });
   };
 
@@ -292,14 +250,11 @@ export const CartProvider = ({ children }) => {
       items: [...state.items],
       totalAmount: state.totalAmount,
       status: 'pending',
-      ...orderDetails
+      ...orderDetails,
     };
 
     dispatch({ type: 'ADD_ORDER', payload: order });
-    
-    // Clear the cart after placing order
     await clearCart();
-    
     return order;
   };
 
@@ -311,7 +266,7 @@ export const CartProvider = ({ children }) => {
         updateQuantity,
         removeItem,
         clearCart,
-        placeOrder, // Add placeOrder function to context
+        placeOrder,
       }}
     >
       {children}

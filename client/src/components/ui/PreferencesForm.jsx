@@ -1,76 +1,358 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
+import { motion } from 'framer-motion';
+import { Save, ArrowRight, ChefHat, Heart, AlertCircle } from 'lucide-react';
 
-const RestaurantCard = ({ restaurant }) => {
-  return (
-    <div className="card overflow-hidden">
-      <div className="relative">
-        <img 
-          src={restaurant.image} 
-          alt={restaurant.name} 
-          className="w-full h-48 object-cover"
-        />
-        {restaurant.isHealthFocused && (
-          <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-            Health Focused
-          </span>
-        )}
-      </div>
+const PreferencesForm = () => {
+  const { user } = useUser();
+  const navigate = useNavigate();
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    dietaryRestrictions: [],
+    favoriteCuisines: [],
+    healthGoals: '',
+    allergies: [],
+    spiceTolerance: 'medium',
+    mealPreferences: [],
+    customMedicalCondition: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Options for form fields
+  const dietaryOptions = [
+    'Vegetarian', 'Vegan', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Paleo', 'Low-Carb', 'Low-Fat'
+  ];
+  
+  const cuisineOptions = [
+    'Indian', 'Italian', 'Chinese', 'Mexican', 'Thai', 'Mediterranean', 'American', 'Japanese'
+  ];
+  
+  const healthGoalOptions = [
+    'Weight Loss',
+    'Muscle Gain',
+    'Maintain Weight',
+    'Improve Energy',
+    'Better Digestion',
+    'Manage Medical Condition'
+  ];
+  
+  const allergyOptions = [
+    'Nuts', 'Shellfish', 'Eggs', 'Soy', 'Wheat', 'Dairy', 'Fish', 'Sesame'
+  ];
+  
+  const mealOptions = [
+    'Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Desserts'
+  ];
+
+  // Handle checkbox changes
+  const handleCheckboxChange = (field, value) => {
+    setFormData(prev => {
+      const currentValues = prev[field];
+      if (currentValues.includes(value)) {
+        return {
+          ...prev,
+          [field]: currentValues.filter(item => item !== value)
+        };
+      } else {
+        return {
+          ...prev,
+          [field]: [...currentValues, value]
+        };
+      }
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.healthGoals) {
+      alert('Please select a health goal');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/preferences/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          dietaryRestrictions: formData.dietaryRestrictions,
+          favoriteCuisines: formData.favoriteCuisines,
+          healthGoals: formData.healthGoals,
+          allergies: formData.allergies
+        }),
+      });
       
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-[#1E293B]">{restaurant.name}</h3>
-          <div className="flex items-center">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-4 w-4 text-yellow-400" 
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            <span className="text-sm font-medium ml-1 text-[#1E293B]">{restaurant.rating}</span>
-            <span className="text-xs text-[#64748B] ml-1">({restaurant.reviewCount})</span>
-          </div>
-        </div>
-        
-        <div className="flex items-center text-sm text-[#64748B] mb-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 11111.314 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <span>{restaurant.location}</span>
-        </div>
-        
-        <div className="flex items-center text-sm text-[#64748B] mb-3">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{restaurant.deliveryTime} min</span>
-          <span className="mx-2">•</span>
-          <span>{restaurant.distance} km</span>
-        </div>
-        
-        <div className="flex flex-wrap gap-1 mb-4">
-          {restaurant.cuisines.map((cuisine, index) => (
-            <span 
-              key={index} 
-              className="bg-[#16A34A]/20 text-[#16A34A] text-xs px-2 py-1 rounded-full"
-            >
-              {cuisine}
-            </span>
-          ))}
-        </div>
-        
-        {/* Updated Link to use restaurant ID */}
-        <Link 
-          to={`/restaurants/${restaurant.id}`}
-          className="btn btn-primary w-full"
+      const data = await response.json();
+      
+      if (data.success) {
+        navigate('/');
+      } else {
+        console.error('Error saving preferences:', data.message);
+        alert(`Failed to save preferences: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      alert('Failed to save preferences. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#1a1a2e] py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
         >
-          View Menu
-        </Link>
+          <h1 className="text-4xl font-bold text-white mb-4">Tell Us About Your Preferences</h1>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            Help us recommend the perfect meals and restaurants tailored to your tastes and health needs.
+          </p>
+        </motion.div>
+
+        <motion.form
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          onSubmit={handleSubmit}
+          className="bg-white rounded-2xl shadow-xl overflow-hidden"
+        >
+          {/* Personalization Section */}
+          <motion.div variants={itemVariants} className="p-8 border-b border-gray-100">
+            <h2 className="text-2xl font-bold text-[#1a1a2e] mb-6 flex items-center">
+              <ChefHat className="w-6 h-6 mr-2 text-[#ffc107]" />
+              Food Preferences
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Dietary Restrictions */}
+              <div>
+                <h3 className="text-lg font-medium text-[#1a1a2e] mb-4">Dietary Restrictions</h3>
+                <div className="space-y-3">
+                  {dietaryOptions.map(option => (
+                    <label key={option} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.dietaryRestrictions.includes(option)}
+                        onChange={() => handleCheckboxChange('dietaryRestrictions', option)}
+                        className="rounded border-gray-300 text-[#ffc107] focus:ring-[#ffc107] h-4 w-4"
+                      />
+                      <span className="ml-2 text-gray-700">{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Cuisine Preferences */}
+              <div>
+                <h3 className="text-lg font-medium text-[#1a1a2e] mb-4">Favorite Cuisines</h3>
+                <div className="space-y-3">
+                  {cuisineOptions.map(option => (
+                    <label key={option} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.favoriteCuisines.includes(option)}
+                        onChange={() => handleCheckboxChange('favoriteCuisines', option)}
+                        className="rounded border-gray-300 text-[#ffc107] focus:ring-[#ffc107] h-4 w-4"
+                      />
+                      <span className="ml-2 text-gray-700">{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* Spice Tolerance */}
+            <div className="mt-8">
+              <h3 className="text-lg font-medium text-[#1a1a2e] mb-4">Spice Tolerance</h3>
+              <div className="flex space-x-4">
+                {['mild', 'medium', 'hot', 'very-hot'].map(level => (
+                  <label key={level} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="spiceTolerance"
+                      checked={formData.spiceTolerance === level}
+                      onChange={() => setFormData({...formData, spiceTolerance: level})}
+                      className="h-4 w-4 border-gray-300 text-[#ffc107] focus:ring-[#ffc107]"
+                    />
+                    <span className="ml-2 text-gray-700 capitalize">{level.replace('-', ' ')}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            
+            {/* Meal Preferences */}
+            <div className="mt-8">
+              <h3 className="text-lg font-medium text-[#1a1a2e] mb-4">Preferred Meals</h3>
+              <div className="flex flex-wrap gap-4">
+                {mealOptions.map(option => (
+                  <label key={option} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.mealPreferences.includes(option)}
+                      onChange={() => handleCheckboxChange('mealPreferences', option)}
+                      className="rounded border-gray-300 text-[#ffc107] focus:ring-[#ffc107] h-4 w-4"
+                    />
+                    <span className="ml-2 text-gray-700">{option}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Health Section */}
+          <motion.div variants={itemVariants} className="p-8 border-b border-gray-100">
+            <h2 className="text-2xl font-bold text-[#1a1a2e] mb-6 flex items-center">
+              <Heart className="w-6 h-6 mr-2 text-[#ff6b35]" />
+              Health Goals
+            </h2>
+            
+            {/* Health Goals */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium text-[#1a1a2e] mb-4">Primary Health Goal *</h3>
+              <div className="space-y-3">
+                {healthGoalOptions.map(option => (
+                  <label key={option} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="healthGoals"
+                      checked={formData.healthGoals === option}
+                      onChange={() => setFormData({...formData, healthGoals: option})}
+                      className="h-4 w-4 border-gray-300 text-[#ff6b35] focus:ring-[#ff6b35]"
+                      required
+                    />
+                    <span className="ml-2 text-gray-700">{option}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Medical Considerations */}
+          <motion.div variants={itemVariants} className="p-8">
+            <h2 className="text-2xl font-bold text-[#1a1a2e] mb-6 flex items-center">
+              <AlertCircle className="w-6 h-6 mr-2 text-[#dc3545]" />
+              Allergies & Medical Considerations
+            </h2>
+            
+            {/* Allergies */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium text-[#1a1a2e] mb-4">Food Allergies</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {allergyOptions.map(option => (
+                  <label key={option} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.allergies.includes(option)}
+                      onChange={() => handleCheckboxChange('allergies', option)}
+                      className="rounded border-gray-300 text-[#dc3545] focus:ring-[#dc3545] h-4 w-4"
+                    />
+                    <span className="ml-2 text-gray-700">{option}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            
+            {/* Custom Medical Condition */}
+            <div className="mt-4">
+              <label htmlFor="customCondition" className="block text-sm font-medium text-gray-700 mb-2">
+                Other medical considerations (optional)
+              </label>
+              <input
+                type="text"
+                id="customCondition"
+                value={formData.customMedicalCondition}
+                onChange={(e) => setFormData({...formData, customMedicalCondition: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter any other medical considerations"
+              />
+            </div>
+          </motion.div>
+          
+          {/* Form Actions */}
+          <motion.div variants={itemVariants} className="px-8 py-6 bg-gray-50 flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors"
+              disabled={isSubmitting}
+            >
+              Skip for Now
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting || !formData.healthGoals}
+              className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="w-5 h-5 mr-2" />
+                  Save Preferences
+                </>
+              )}
+            </button>
+          </motion.div>
+        </motion.form>
+        
+        {/* Info Note */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8 p-6 bg-gradient-to-r from-blue-900 to-purple-900 rounded-2xl text-white"
+        >
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <AlertCircle className="w-6 h-6 text-[#ffc107]" />
+            </div>
+            <div className="ml-4">
+              <h3 className="text-lg font-medium">How we use your information</h3>
+              <p className="mt-2 text-sm opacity-90">
+                Your preferences help us recommend restaurants and meals that match your dietary needs and taste preferences.
+                We never share your medical information with restaurants. You can update these preferences anytime in your account settings.
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
 };
 
-export default RestaurantCard;
+export default PreferencesForm;

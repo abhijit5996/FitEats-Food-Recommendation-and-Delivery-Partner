@@ -4,7 +4,7 @@ import './index.css';
 
 // Layout
 import Layout from './components/layout/Layout';
-import ScrollToTop from './components/layout/ScrollToTop'; // 👈 Added
+import ScrollToTop from './components/layout/ScrollToTop';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -20,6 +20,7 @@ import ProfilePage from './pages/ProfilePage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import PreferencesForm from './components/ui/PreferencesForm';
+import AuthRedirector from './components/AuthRedirector';
 
 // Context Providers
 import { CartProvider } from './context/CartContext';
@@ -28,8 +29,7 @@ function App() {
   return (
     <CartProvider>
       <Router>
-        {/* 👇 This makes sure every route change resets scroll */}
-        <ScrollToTop />  
+        <ScrollToTop />
 
         <Routes>
           <Route path="/" element={<Layout />}>
@@ -41,6 +41,21 @@ function App() {
             <Route path="foods" element={<FoodsPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="about" element={<AboutPage />} />
+            
+            {/* Auth redirector - handles post-login flow */}
+            <Route 
+              path="auth-redirect" 
+              element={
+                <>
+                  <SignedIn>
+                    <AuthRedirector />
+                  </SignedIn>
+                  <SignedOut>
+                    <RedirectToSignIn />
+                  </SignedOut>
+                </>
+              } 
+            />
             
             {/* Protected routes */}
             <Route 
@@ -83,7 +98,7 @@ function App() {
               } 
             />
             <Route 
-              path="orderhistory"  // Changed from "order-history" to "orderhistory"
+              path="orderhistory"
               element={
                 <>
                   <SignedIn>
@@ -113,10 +128,7 @@ function App() {
               element={
                 <>
                   <SignedIn>
-                    <PreferencesForm 
-                      onSubmit={() => window.location.href = '/'}
-                      onSkip={() => window.location.href = '/'}
-                    />
+                    <PreferencesForm />
                   </SignedIn>
                   <SignedOut>
                     <RedirectToSignIn />

@@ -13,25 +13,25 @@ export const apiConfig = {
 export const endpoints = {
   // Cart endpoints
   cart: {
-    get: (userId) => `${API_BASE_URL}/cart/${userId}`,
-    add: (userId) => `${API_BASE_URL}/cart/${userId}`,
-    update: (userId, itemId) => `${API_BASE_URL}/cart/${userId}/${itemId}`,
-    remove: (userId, itemId) => `${API_BASE_URL}/cart/${userId}/${itemId}`,
-    clear: (userId) => `${API_BASE_URL}/cart/${userId}`,
+    get: (userId) => `${API_BASE_URL}/api/cart/${userId}`,
+    add: (userId) => `${API_BASE_URL}/api/cart/${userId}`,
+    update: (userId, itemId) => `${API_BASE_URL}/api/cart/${userId}/${itemId}`,
+    remove: (userId, itemId) => `${API_BASE_URL}/api/cart/${userId}/${itemId}`,
+    clear: (userId) => `${API_BASE_URL}/api/cart/${userId}`,
   },
   
   // Order endpoints
   orders: {
-    create: (userId) => `${API_BASE_URL}/orders/${userId}`,
-    getHistory: (userId) => `${API_BASE_URL}/orders/${userId}`,
-    getDetails: (userId, orderId) => `${API_BASE_URL}/orders/${userId}/${orderId}`,
+    create: (userId) => `${API_BASE_URL}/api/orders/${userId}`,
+    getHistory: (userId) => `${API_BASE_URL}/api/orders/${userId}`,
+    getDetails: (userId, orderId) => `${API_BASE_URL}/api/orders/${userId}/${orderId}`,
   },
   
   // User endpoints
   user: {
-    create: () => `${API_BASE_URL}/user`,
-    get: (userId) => `${API_BASE_URL}/user/${userId}`,
-    update: (userId) => `${API_BASE_URL}/user/${userId}`,
+    create: () => `${API_BASE_URL}/api/user`,
+    get: (userId) => `${API_BASE_URL}/api/user/${userId}`,
+    update: (userId) => `${API_BASE_URL}/api/user/${userId}`,
   },
 };
 
