@@ -23,7 +23,7 @@ import JeeraRice from '../assets/images/jeera-rice.jpg';
 import TandooriRoti from '../assets/images/tandoori-roti.jpg';
 import ButterNaan from '../assets/images/butter-naan.jpg';
 import PaneerBhurji from '../assets/images/paneer-bhurji.jpg';
-import RajmaChawal from '../assets/images/rajma-chawal.jpg';
+import RajmaChawal from "../assets/images/rajma-chawal.jpg";
 import MushroomMatar from '../assets/images/mushroom-matar.jpg';
 import KadhiPakora from '../assets/images/kadhi-pakora.jpg';
 import StuffedParatha from '../assets/images/stuffed-paratha.jpg';
