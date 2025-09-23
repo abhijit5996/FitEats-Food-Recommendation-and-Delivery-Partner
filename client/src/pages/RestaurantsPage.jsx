@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import { motion, AnimatePresence } from 'framer-motion';
+import { endpoints } from '../config/api';
 
 const RestaurantsPage = () => {
   const { user } = useUser();
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     search: '',
     cuisine: '',
@@ -19,10 +21,50 @@ const RestaurantsPage = () => {
   // Get user preferences from Clerk user metadata
   const preferences = user?.unsafeMetadata?.preferences || {};
   
-  // Sample restaurant data
+  // Fetch restaurants from API
   useEffect(() => {
-    // In a real app, this would be fetched from an API
-    const sampleRestaurants = [
+    const fetchRestaurants = async () => {
+      try {
+        const response = await fetch(endpoints.restaurants.getAll());
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Fetched restaurants:', data.restaurants);
+          
+          // Transform restaurant data to ensure consistent ID field
+          const transformedRestaurants = data.restaurants?.map(restaurant => ({
+            id: String(restaurant._id || restaurant.id),
+            name: String(restaurant.name || ''),
+            image: String(restaurant.image || ''),
+            rating: Number(restaurant.rating || 4.0),
+            reviewCount: Number(restaurant.reviewCount || 0),
+            location: String(restaurant.location || ''),
+            deliveryTime: String(restaurant.deliveryTime || '30-40'),
+            distance: String(restaurant.distance || '2.5'),
+            cuisines: Array.isArray(restaurant.cuisines) ? restaurant.cuisines : [],
+            isHealthFocused: Boolean(restaurant.isHealthFocused)
+          })) || [];
+          
+          console.log('Transformed restaurants:', transformedRestaurants);
+          setRestaurants(transformedRestaurants);
+        } else {
+          console.error('Failed to fetch restaurants');
+          // Fallback to sample data if API fails
+          setRestaurants(getSampleRestaurants());
+        }
+      } catch (error) {
+        console.error('Error fetching restaurants:', error);
+        // Fallback to sample data if API fails
+        setRestaurants(getSampleRestaurants());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
+
+  // Sample restaurant data as fallback
+  const getSampleRestaurants = () => [
       // Popular Chains (QSR)
 {
   id: 1,
@@ -474,11 +516,14 @@ const RestaurantsPage = () => {
 }
       
     ];
-    
-    setRestaurants(sampleRestaurants);
-    setFilteredRestaurants(sampleRestaurants);
-    
-    // Apply user preferences as initial filters if available
+
+  // Apply filters when restaurants or filters change
+  useEffect(() => {
+    applyFilters(restaurants, filters);
+  }, [restaurants, filters]);
+
+  // Apply user preferences as initial filters if available
+  useEffect(() => {
     if (preferences && Object.keys(preferences).length > 0) {
       const userFilters = {
         ...filters,
@@ -486,9 +531,8 @@ const RestaurantsPage = () => {
         healthFocused: preferences.healthConscious || false,
       };
       setFilters(userFilters);
-      applyFilters(sampleRestaurants, userFilters);
     }
-  }, [user]);
+  }, [user, preferences]);
   
   const applyFilters = (restaurantList, currentFilters) => {
     let filtered = [...restaurantList];
@@ -514,7 +558,7 @@ const RestaurantsPage = () => {
     
     // Apply health-focused filter
     if (currentFilters.healthFocused) {
-      filtered = filtered.filter(restaurant => restaurant.healthFocused);
+      filtered = filtered.filter(restaurant => restaurant.isHealthFocused);
     }
     
     // Apply rating filter
@@ -524,11 +568,18 @@ const RestaurantsPage = () => {
     
     // Apply dietary options filter
     if (currentFilters.dietaryOptions.length > 0) {
-      filtered = filtered.filter(restaurant => 
-        currentFilters.dietaryOptions.every(option => 
-          restaurant.dietaryOptions.includes(option)
-        )
-      );
+      filtered = filtered.filter(restaurant => {
+        // If restaurant has dietaryOptions property, check against it
+        if (restaurant.dietaryOptions && Array.isArray(restaurant.dietaryOptions)) {
+          return currentFilters.dietaryOptions.every(option => 
+            restaurant.dietaryOptions.includes(option)
+          );
+        }
+        // Otherwise, assume basic dietary compatibility based on cuisines/health focus
+        return restaurant.isHealthFocused || restaurant.cuisines.some(cuisine => 
+          ['Vegetarian', 'Vegan', 'Healthy', 'Salads'].includes(cuisine)
+        );
+      });
     }
     
     setFilteredRestaurants(filtered);
@@ -580,7 +631,7 @@ const RestaurantsPage = () => {
   const allCuisines = [...new Set(restaurants.flatMap(restaurant => restaurant.cuisines))];
   
   // Get unique dietary options from all restaurants
-  const allDietaryOptions = [...new Set(restaurants.flatMap(restaurant => restaurant.dietaryOptions))];
+  const allDietaryOptions = ['Vegetarian', 'Vegan', 'Gluten-Free', 'Dairy-Free', 'Keto', 'Low-Carb', 'Organic'];
   
   // Animation variants
   const containerVariants = {

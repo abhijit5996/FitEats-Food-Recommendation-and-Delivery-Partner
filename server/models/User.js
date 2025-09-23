@@ -11,6 +11,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  name: {
+    type: String,
+    required: false
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
   preferences: {
     dietaryRestrictions: [String],
     cuisinePreferences: [String],
