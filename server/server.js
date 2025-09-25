@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
-// Add this import
+import adminRoutes from './routes/adminRoutes.js';
+import restaurantRoutes from './routes/restaurantRoutes.js';
+import foodRoutes from './routes/foodRoutes.js';
 
 dotenv.config();
 
@@ -31,7 +33,9 @@ app.use(express.json());
 app.use('/api/user', userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
-// Add this line
+app.use('/api/admin', adminRoutes);
+app.use('/api/restaurants', restaurantRoutes);
+app.use('/api/foods', foodRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

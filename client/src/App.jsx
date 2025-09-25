@@ -22,40 +22,80 @@ import OrderDetailsPage from './pages/OrderDetailsPage';
 import PreferencesForm from './components/ui/PreferencesForm';
 import AuthRedirector from './components/AuthRedirector';
 
+// Admin Components
+import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import RestaurantsManagementPage from './pages/admin/RestaurantsManagementPage';
+import FoodsManagementPage from './pages/admin/FoodsManagementPage';
+import OrdersManagementPage from './pages/admin/OrdersManagementPage';
+import UsersManagementPage from './pages/admin/UsersManagementPage';
+import AdminProtectedRoute from './components/admin/AdminProtectedRoute';
+
 // Context Providers
 import { CartProvider } from './context/CartContext';
+import { AdminProvider } from './context/AdminContext';
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <ScrollToTop />
+    <AdminProvider>
+      <CartProvider>
+        <Router>
+          <ScrollToTop />
 
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            {/* Public routes */}
-            <Route index element={<HomePage />} />
-            <Route path="restaurants" element={<RestaurantsPage />} />
-            <Route path="restaurants/:id" element={<RestaurantMenuPage />} />
-            <Route path="recipe/:id" element={<RecipePage />} />
-            <Route path="foods" element={<FoodsPage />} />
-            <Route path="contact" element={<ContactPage />} />
-            <Route path="about" element={<AboutPage />} />
-            
-            {/* Auth redirector - handles post-login flow */}
-            <Route 
-              path="auth-redirect" 
-              element={
-                <>
-                  <SignedIn>
-                    <AuthRedirector />
-                  </SignedIn>
-                  <SignedOut>
-                    <RedirectToSignIn />
-                  </SignedOut>
-                </>
-              } 
-            />
+          <Routes>
+            {/* Admin Routes - Outside main layout */}
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/admin/dashboard" element={
+              <AdminProtectedRoute>
+                <AdminDashboardPage />
+              </AdminProtectedRoute>
+            } />
+            <Route path="/admin/restaurants" element={
+              <AdminProtectedRoute>
+                <RestaurantsManagementPage />
+              </AdminProtectedRoute>
+            } />
+            <Route path="/admin/foods" element={
+              <AdminProtectedRoute>
+                <FoodsManagementPage />
+              </AdminProtectedRoute>
+            } />
+            <Route path="/admin/orders" element={
+              <AdminProtectedRoute>
+                <OrdersManagementPage />
+              </AdminProtectedRoute>
+            } />
+            <Route path="/admin/users" element={
+              <AdminProtectedRoute>
+                <UsersManagementPage />
+              </AdminProtectedRoute>
+            } />
+
+            {/* Main App Routes */}
+            <Route path="/" element={<Layout />}>
+              {/* Public routes */}
+              <Route index element={<HomePage />} />
+              <Route path="restaurants" element={<RestaurantsPage />} />
+              <Route path="restaurants/:id" element={<RestaurantMenuPage />} />
+              <Route path="recipe/:id" element={<RecipePage />} />
+              <Route path="foods" element={<FoodsPage />} />
+              <Route path="contact" element={<ContactPage />} />
+              <Route path="about" element={<AboutPage />} />
+              
+              {/* Auth redirector - handles post-login flow */}
+              <Route 
+                path="auth-redirect" 
+                element={
+                  <>
+                    <SignedIn>
+                      <AuthRedirector />
+                    </SignedIn>
+                    <SignedOut>
+                      <RedirectToSignIn />
+                    </SignedOut>
+                  </>
+                } 
+              />
             
             {/* Protected routes */}
             <Route 
@@ -136,10 +176,11 @@ function App() {
                 </>
               } 
             />
-          </Route>
-        </Routes>
-      </Router>
-    </CartProvider>
+            </Route>
+          </Routes>
+        </Router>
+      </CartProvider>
+    </AdminProvider>
   );
 }
 

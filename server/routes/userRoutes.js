@@ -1,11 +1,15 @@
 import express from 'express';
 import {
+  createOrGetUser,
   savePreferences,
   getPreferences,
   checkPreferences
 } from '../controllers/userController.js';
 
 const router = express.Router();
+
+// Create or get user
+router.post('/', createOrGetUser);
 
 // Save user preferences
 router.post('/preferences', savePreferences);

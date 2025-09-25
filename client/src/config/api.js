@@ -33,6 +33,37 @@ export const endpoints = {
     get: (userId) => `${API_BASE_URL}/api/user/${userId}`,
     update: (userId) => `${API_BASE_URL}/api/user/${userId}`,
   },
+
+  // Admin endpoints
+  admin: {
+    login: () => `${API_BASE_URL}/api/admin/login`,
+    verify: () => `${API_BASE_URL}/api/admin/verify`,
+    dashboard: () => `${API_BASE_URL}/api/admin/dashboard`,
+    orders: () => `${API_BASE_URL}/api/admin/orders`,
+    users: () => `${API_BASE_URL}/api/admin/users`,
+    updateOrderStatus: (orderId) => `${API_BASE_URL}/api/admin/orders/${orderId}/status`,
+    updateUserStatus: (userId) => `${API_BASE_URL}/api/admin/users/${userId}/status`,
+  },
+
+  // Restaurant endpoints
+  restaurants: {
+    getAll: () => `${API_BASE_URL}/api/restaurants`,
+    getById: (id) => `${API_BASE_URL}/api/restaurants/${id}`,
+    create: () => `${API_BASE_URL}/api/restaurants`,
+    update: (id) => `${API_BASE_URL}/api/restaurants/${id}`,
+    delete: (id) => `${API_BASE_URL}/api/restaurants/${id}`,
+    getMenu: (id) => `${API_BASE_URL}/api/restaurants/${id}/menu`,
+  },
+
+  // Food endpoints
+  foods: {
+    getAll: () => `${API_BASE_URL}/api/foods`,
+    getById: (id) => `${API_BASE_URL}/api/foods/${id}`,
+    create: () => `${API_BASE_URL}/api/foods`,
+    update: (id) => `${API_BASE_URL}/api/foods/${id}`,
+    delete: (id) => `${API_BASE_URL}/api/foods/${id}`,
+    getCategories: () => `${API_BASE_URL}/api/foods/categories`,
+  },
 };
 
 // Helper function to make API requests
