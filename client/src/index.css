@@ -20,8 +20,11 @@
   --color-destructive: #dc3545;
   --color-destructive-foreground: #ffffff;
   --color-border: rgba(255, 255, 255, 0.1);
-  --color-input: transparent;
+
+  /* ✅ Fixed input colors */
+  --color-input: #1a1a2e;
   --color-input-background: #ffffff;
+
   --color-switch-background: #cbced4;
   --color-ring: #ffc107;
   --color-chart-1: #ffc107;
@@ -74,83 +77,74 @@
     letter-spacing: -0.025em;
     color: var(--color-foreground);
   }
-  
-  /* Text styles for better readability */
+
   p, li, span {
     color: var(--color-foreground);
   }
-  
-  /* Card text styling - uses dark colors on white card background */
+
   .card h1, 
   .card h2, 
   .card h3, 
   .card h4, 
   .card h5, 
   .card h6 {
-    color: var(--color-card-foreground) !important; /* Dark text on white card */
+    color: var(--color-card-foreground) !important;
     font-weight: 600;
   }
-  
+
   .card p, 
   .card li, 
   .card span,
   .card div {
-    color: var(--color-card-foreground) !important; /* Dark text on white card */
+    color: var(--color-card-foreground) !important;
   }
-  
-  /* Muted text inside cards */
+
   .card .text-muted {
-    color: var(--color-muted-foreground) !important; /* Gray text for muted content */
+    color: var(--color-muted-foreground) !important;
   }
-  
-  /* Step elements styling */
+
   .card .step, 
   .card .step p {
     color: var(--color-card-foreground) !important;
     font-weight: 500;
   }
-  
-  /* Step number circles */
+
   .card .step-number {
     background-color: var(--color-primary) !important;
     color: var(--color-primary-foreground) !important;
     font-weight: 600 !important;
   }
-  
-  /* Visual elements like checkmarks and bullets */
+
   .card .checkmark,
   .card .bullet {
     color: var(--color-primary) !important;
     font-weight: 600;
   }
-  
+
   .text-muted {
     color: var(--color-muted-foreground) !important;
   }
-  
+
   .text-disabled {
     color: #a1a5b7 !important;
   }
-  
-  /* Disabled text inside cards */
+
   .card .text-disabled {
     color: #8e95a9 !important;
   }
-  
-  /* List items in cards */
+
   .card ul li,
   .card ol li {
     color: var(--color-card-foreground) !important;
     margin-bottom: 0.5rem;
   }
-  
-  /* Nutrition info styling */
+
   .nutrition-value {
     color: var(--color-primary) !important;
     font-weight: 700 !important;
     font-size: 1.5rem !important;
   }
-  
+
   .nutrition-label {
     color: var(--color-card-foreground) !important;
     font-weight: 500 !important;
@@ -174,43 +168,42 @@
     font-size: 1rem;
     min-height: 3rem;
   }
-  
+
   .btn-primary {
     background-color: var(--color-primary);
     color: var(--color-primary-foreground);
     box-shadow: 0 4px 6px rgba(255, 193, 7, 0.25);
   }
-  
+
   .btn-primary:hover {
     background-color: #e6ac00;
     transform: translateY(-2px);
     box-shadow: 0 10px 25px -5px rgba(255, 193, 7, 0.4);
   }
-  
+
   .btn-secondary {
     background-color: var(--color-secondary);
     color: var(--color-secondary-foreground);
     box-shadow: 0 4px 6px rgba(255, 107, 53, 0.25);
   }
-  
+
   .btn-secondary:hover {
     background-color: #e55a2b;
     transform: translateY(-2px);
     box-shadow: 0 10px 25px -5px rgba(255, 107, 53, 0.4);
   }
-  
+
   .btn-outline {
     border: 2px solid var(--color-primary);
     color: var(--color-primary);
     background-color: transparent;
   }
-  
+
   .btn-outline:hover {
     background-color: var(--color-primary);
     color: var(--color-primary-foreground);
   }
-  
-  /* Food card buttons */
+
   .btn-food-card {
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
@@ -220,7 +213,7 @@
     text-align: center;
     box-sizing: border-box;
   }
-  
+
   .container-custom {
     max-width: 80rem;
     margin-left: auto;
@@ -228,7 +221,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
+
   .card {
     background-color: var(--color-card);
     border-radius: 1.25rem;
@@ -238,12 +231,13 @@
     border: 1px solid var(--color-border);
     color: var(--color-card-foreground);
   }
-  
+
   .card:hover {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     transform: translateY(-5px);
   }
-  
+
+  /* ✅ Fixed input styling */
   .input-field {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -251,20 +245,22 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     transition: all 0.2s ease;
-    color: var(--color-card-foreground);
+    color: var(--color-input);
     font-weight: 500;
   }
-  
+
   .input-field:focus {
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
     border-color: transparent;
+    background-color: #fff;
+    color: var(--color-card-foreground);
   }
-  
+
   .input-field::placeholder {
     color: var(--color-muted-foreground);
   }
-  
+
   .section-padding {
     padding-top: 4rem;
     padding-bottom: 4rem;
@@ -278,34 +274,31 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
-  
+
   .animate-pulse-slow {
     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  
+
   .bg-gradient-premium {
     background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   }
-  
-  /* Dark card background gradient using sidebar colors */
+
   .bg-gradient-dark {
     background: linear-gradient(135deg, var(--color-sidebar-accent) 0%, #40407a 100%);
   }
-  
-  /* Text color utilities */
+
   .text-light {
     color: var(--color-foreground) !important;
   }
-  
+
   .text-white {
     color: #ffffff !important;
   }
-  
-  /* Additional utility for card foreground text */
+
   .text-card {
     color: var(--color-card-foreground) !important;
   }
@@ -329,7 +322,6 @@
   }
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -347,7 +339,6 @@
   background: linear-gradient(135deg, #e6ac00, #e55a2b);
 }
 
-/* Focus styles for accessibility */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible {
@@ -355,7 +346,6 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
-/* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -372,7 +362,6 @@ input:focus-visible {
   }
 }
 
-/* Responsive adjustments */
 @media (min-width: 640px) {
   .container-custom {
     padding-left: 1.5rem;
@@ -387,14 +376,12 @@ input:focus-visible {
   }
 }
 
-/* Mobile responsive adjustments */
 @media (max-width: 767px) {
   .container-custom {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
-  /* Adjust button size for mobile */
+
   .btn-food-card {
     min-width: 7rem;
     padding: 0.625rem 0.875rem;
@@ -402,7 +389,6 @@ input:focus-visible {
   }
 }
 
-/* Line clamp utilities */
 .line-clamp-1 {
   overflow: hidden;
   display: -webkit-box;

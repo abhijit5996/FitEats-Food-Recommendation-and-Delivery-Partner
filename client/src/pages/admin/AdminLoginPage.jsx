@@ -73,7 +73,7 @@ const AdminLoginPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-semibold text-[#1a1a2e] mb-2">
+            <label htmlFor="username" className="block text-sm font-semibold text-[#000000] mb-2">
               Username
             </label>
             <input

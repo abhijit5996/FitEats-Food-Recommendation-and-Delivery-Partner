@@ -11,11 +11,15 @@ const OrdersManagementPage = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
-  const { getAuthHeaders } = useAdmin();
+  const { getAuthHeaders, isAuthenticated, isLoading } = useAdmin();
 
   useEffect(() => {
+    // Wait for auth verification to complete before fetching protected data
+    if (isLoading) return;
+    if (!isAuthenticated) return; // Could redirect to login if desired
+
     fetchOrders();
-  }, []);
+  }, [isLoading, isAuthenticated]);
 
   const fetchOrders = async () => {
     try {

@@ -11,11 +11,15 @@ const UsersManagementPage = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserDetails, setShowUserDetails] = useState(false);
-  const { getAuthHeaders } = useAdmin();
+  const { getAuthHeaders, isAuthenticated, isLoading } = useAdmin();
 
   useEffect(() => {
+    // Wait for admin verification to finish
+    if (isLoading) return;
+    if (!isAuthenticated) return;
+
     fetchUsers();
-  }, []);
+  }, [isLoading, isAuthenticated]);
 
   const fetchUsers = async () => {
     try {
@@ -81,8 +85,12 @@ const UsersManagementPage = () => {
     }
 
     try {
-      const response = await fetch(`${endpoints.admin.dashboard}/users/${userId}`, {
+      const response = await fetch(endpoints.admin.deleteUser ? endpoints.admin.deleteUser(userId) : `${endpoints.admin.users()}/${userId}`, {
         method: 'DELETE',
+        headers: {
+          ...getAuthHeaders(),
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.ok) {

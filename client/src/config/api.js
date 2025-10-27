@@ -43,6 +43,7 @@ export const endpoints = {
     users: () => `${API_BASE_URL}/api/admin/users`,
     updateOrderStatus: (orderId) => `${API_BASE_URL}/api/admin/orders/${orderId}/status`,
     updateUserStatus: (userId) => `${API_BASE_URL}/api/admin/users/${userId}/status`,
+    deleteUser: (userId) => `${API_BASE_URL}/api/admin/users/${userId}`,
   },
 
   // Restaurant endpoints

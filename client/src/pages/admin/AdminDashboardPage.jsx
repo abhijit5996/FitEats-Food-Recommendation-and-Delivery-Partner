@@ -5,11 +5,15 @@ import { endpoints } from '../../config/api';
 const AdminDashboardPage = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { getAuthHeaders } = useAdmin();
+  const { getAuthHeaders, isAuthenticated, isLoading } = useAdmin();
 
   useEffect(() => {
+    // Wait until AdminContext has finished verifying token. Only fetch if authenticated.
+    if (isLoading) return;
+    if (!isAuthenticated) return; // Optionally you can redirect to login here
+
     fetchDashboardData();
-  }, []);
+  }, [isLoading, isAuthenticated]);
 
   const fetchDashboardData = async () => {
     try {
