@@ -11,6 +11,8 @@ if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key")
 }
 
+console.log('🔑 Clerk Key loaded:', PUBLISHABLE_KEY.substring(0, 20) + '...');
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ClerkProvider 

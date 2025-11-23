@@ -3,11 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 
 const AuthRedirector = () => {
+  console.log('🔄 AuthRedirector COMPONENT RENDERED');
+  
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
 
+  console.log('🔄 AuthRedirector state:', { isLoaded, hasUser: !!user, userId: user?.id });
+
   useEffect(() => {
-    console.log('🔄 AuthRedirector mounted', { isLoaded, hasUser: !!user });
+    console.log('🔄 AuthRedirector useEffect triggered', { isLoaded, hasUser: !!user });
     
     if (isLoaded && user) {
       console.log('👤 User loaded:', { id: user.id, email: user.primaryEmailAddress?.emailAddress });
@@ -52,6 +56,7 @@ const AuthRedirector = () => {
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffc107] mx-auto"></div>
         <p className="mt-4 text-gray-300">Setting up your experience...</p>
+        <p className="mt-2 text-sm text-gray-400">User: {user?.id || 'Loading...'}</p>
       </div>
     </div>
   );

@@ -43,35 +43,22 @@ function App() {
           <ScrollToTop />
 
           <Routes>
-            {/* Admin Routes - Outside main layout */}
-            <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route path="/admin/dashboard" element={
-              <AdminProtectedRoute>
-                <AdminDashboardPage />
-              </AdminProtectedRoute>
-            } />
-            <Route path="/admin/restaurants" element={
-              <AdminProtectedRoute>
-                <RestaurantsManagementPage />
-              </AdminProtectedRoute>
-            } />
-            <Route path="/admin/foods" element={
-              <AdminProtectedRoute>
-                <FoodsManagementPage />
-              </AdminProtectedRoute>
-            } />
-            <Route path="/admin/orders" element={
-              <AdminProtectedRoute>
-                <OrdersManagementPage />
-              </AdminProtectedRoute>
-            } />
-            <Route path="/admin/users" element={
-              <AdminProtectedRoute>
-                <UsersManagementPage />
-              </AdminProtectedRoute>
-            } />
+            {/* Auth redirector - handles post-login flow - OUTSIDE LAYOUT */}
+            <Route 
+              path="auth-redirect" 
+              element={
+                <>
+                  <SignedIn>
+                    <AuthRedirector />
+                  </SignedIn>
+                  <SignedOut>
+                    <RedirectToSignIn />
+                  </SignedOut>
+                </>
+              } 
+            />
 
-            {/* Main App Routes */}
+            {/* Main App Routes with Layout */}
             <Route path="/" element={<Layout />}>
               {/* Public routes */}
               <Route index element={<HomePage />} />
@@ -82,22 +69,7 @@ function App() {
               <Route path="contact" element={<ContactPage />} />
               <Route path="about" element={<AboutPage />} />
               
-              {/* Auth redirector - handles post-login flow */}
-              <Route 
-                path="auth-redirect" 
-                element={
-                  <>
-                    <SignedIn>
-                      <AuthRedirector />
-                    </SignedIn>
-                    <SignedOut>
-                      <RedirectToSignIn />
-                    </SignedOut>
-                  </>
-                } 
-              />
-            
-            {/* Protected routes */}
+              {/* Protected routes */}
             <Route 
               path="cart" 
               element={
