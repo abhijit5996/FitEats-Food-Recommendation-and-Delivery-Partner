@@ -8,6 +8,7 @@ const RecipeCard = ({ food, showRestaurant }) => {
   
   // Safe data extraction with fallbacks
   const safeFood = {
+    _id: food?._id || food?.id || 'unknown',
     id: food?.id || food?._id || 'unknown',
     name: String(food?.name || 'Unnamed Item'),
     description: String(food?.description || 'No description available'),
@@ -44,7 +45,7 @@ const RecipeCard = ({ food, showRestaurant }) => {
   return (
     <div className="card overflow-hidden bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
       <div className="cursor-pointer">
-        <Link to={`/recipe/${createSlug(safeFood.name)}`}>
+        <Link to={`/recipe/${safeFood.id}`}>
           <div className="relative overflow-hidden">
             <img 
               src={safeFood.image} 

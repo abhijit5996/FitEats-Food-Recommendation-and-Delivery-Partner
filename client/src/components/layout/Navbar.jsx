@@ -168,12 +168,12 @@ const Navbar = ({ cartItems = [] }) => {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <SignInButton mode="modal" afterSignInUrl="/auth-redirect">
+                <SignInButton mode="modal">
                   <button className="btn btn-outline text-sm px-4 py-1.5">
                     Login
                   </button>
                 </SignInButton>
-                <SignUpButton mode="modal" afterSignUpUrl="/auth-redirect">
+                <SignUpButton mode="modal">
                   <button className="btn btn-primary text-sm px-4 py-1.5">
                     Sign Up
                   </button>
@@ -345,7 +345,7 @@ const Navbar = ({ cartItems = [] }) => {
                     </div>
                   ) : (
                     <div className="flex space-x-2">
-                      <SignInButton mode="modal" afterSignInUrl="/auth-redirect">
+                      <SignInButton mode="modal">
                         <button
                           className="flex-1 bg-transparent border border-[#ffc107] text-[#ffc107] px-4 py-2 rounded-md text-sm font-medium hover:bg-[#ffc107] hover:text-[#1a1a2e] transition-colors"
                           onClick={() => setIsMenuOpen(false)}
@@ -354,7 +354,7 @@ const Navbar = ({ cartItems = [] }) => {
                         </button>
                       </SignInButton>
                       
-                      <SignUpButton mode="modal" afterSignUpUrl="/auth-redirect">
+                      <SignUpButton mode="modal">
                         <button
                           className="flex-1 bg-[#ffc107] text-[#1a1a2e] px-4 py-2 rounded-md text-sm font-medium hover:bg-[#e6ad06] transition-colors"
                           onClick={() => setIsMenuOpen(false)}

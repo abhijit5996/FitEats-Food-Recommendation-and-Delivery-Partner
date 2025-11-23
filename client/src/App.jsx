@@ -71,7 +71,22 @@ function App() {
               </AdminProtectedRoute>
             } />
 
-            {/* Main App Routes */}
+            {/* Auth redirector - handles post-login flow - OUTSIDE LAYOUT */}
+            <Route 
+              path="auth-redirect" 
+              element={
+                <>
+                  <SignedIn>
+                    <AuthRedirector />
+                  </SignedIn>
+                  <SignedOut>
+                    <RedirectToSignIn />
+                  </SignedOut>
+                </>
+              } 
+            />
+
+            {/* Main App Routes with Layout */}
             <Route path="/" element={<Layout />}>
               {/* Public routes */}
               <Route index element={<HomePage />} />
@@ -82,22 +97,7 @@ function App() {
               <Route path="contact" element={<ContactPage />} />
               <Route path="about" element={<AboutPage />} />
               
-              {/* Auth redirector - handles post-login flow */}
-              <Route 
-                path="auth-redirect" 
-                element={
-                  <>
-                    <SignedIn>
-                      <AuthRedirector />
-                    </SignedIn>
-                    <SignedOut>
-                      <RedirectToSignIn />
-                    </SignedOut>
-                  </>
-                } 
-              />
-            
-            {/* Protected routes */}
+              {/* Protected routes */}
             <Route 
               path="cart" 
               element={

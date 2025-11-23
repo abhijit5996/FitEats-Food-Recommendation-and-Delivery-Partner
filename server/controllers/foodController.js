@@ -103,7 +103,7 @@ export const getFoodById = async (req, res) => {
       return res.status(404).json({ message: 'Food item not found' });
     }
 
-    res.status(200).json({ food });
+    res.status(200).json(food);
   } catch (error) {
     console.error('Get food error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -124,11 +124,24 @@ export const createFood = async (req, res) => {
       ingredients,
       allergens,
       nutritionalInfo,
-      spiceLevel
+      spiceLevel,
+      // Recipe fields
+      prepTime,
+      cookTime,
+      servings,
+      difficulty,
+      instructions,
+      tips,
+      cuisine
     } = req.body;
 
     if (!name || !description || !price || !image || !category || !restaurant) {
       return res.status(400).json({ message: 'All required fields must be provided' });
+    }
+
+    // Validate restaurant ID format
+    if (!mongoose.Types.ObjectId.isValid(restaurant)) {
+      return res.status(400).json({ message: 'Invalid restaurant ID' });
     }
 
     // Verify restaurant exists
@@ -149,7 +162,15 @@ export const createFood = async (req, res) => {
       ingredients: ingredients || [],
       allergens: allergens || [],
       nutritionalInfo: nutritionalInfo || {},
-      spiceLevel: spiceLevel || 'medium'
+      spiceLevel: spiceLevel || 'medium',
+      // Recipe fields
+      prepTime: prepTime || '15 mins',
+      cookTime: cookTime || '30 mins',
+      servings: servings || 2,
+      difficulty: difficulty || 'Medium',
+      instructions: instructions || [],
+      tips: tips || [],
+      cuisine: cuisine || 'Indian'
     });
 
     await food.save();

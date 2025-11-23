@@ -1,5 +1,5 @@
 // API configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const apiConfig = {
   baseURL: API_BASE_URL,
@@ -13,57 +13,57 @@ export const apiConfig = {
 export const endpoints = {
   // Cart endpoints
   cart: {
-    get: (userId) => `${API_BASE_URL}/api/cart/${userId}`,
-    add: (userId) => `${API_BASE_URL}/api/cart/${userId}`,
-    update: (userId, itemId) => `${API_BASE_URL}/api/cart/${userId}/${itemId}`,
-    remove: (userId, itemId) => `${API_BASE_URL}/api/cart/${userId}/${itemId}`,
-    clear: (userId) => `${API_BASE_URL}/api/cart/${userId}`,
+    get: (userId) => `${API_BASE_URL}/cart/${userId}`,
+    add: (userId) => `${API_BASE_URL}/cart/${userId}`,
+    update: (userId, itemId) => `${API_BASE_URL}/cart/${userId}/${itemId}`,
+    remove: (userId, itemId) => `${API_BASE_URL}/cart/${userId}/${itemId}`,
+    clear: (userId) => `${API_BASE_URL}/cart/${userId}`,
   },
   
   // Order endpoints
   orders: {
-    create: (userId) => `${API_BASE_URL}/api/orders/${userId}`,
-    getHistory: (userId) => `${API_BASE_URL}/api/orders/${userId}`,
-    getDetails: (userId, orderId) => `${API_BASE_URL}/api/orders/${userId}/${orderId}`,
+    create: (userId) => `${API_BASE_URL}/orders/${userId}`,
+    getHistory: (userId) => `${API_BASE_URL}/orders/${userId}`,
+    getDetails: (userId, orderId) => `${API_BASE_URL}/orders/${userId}/${orderId}`,
   },
   
   // User endpoints
   user: {
-    create: () => `${API_BASE_URL}/api/user`,
-    get: (userId) => `${API_BASE_URL}/api/user/${userId}`,
-    update: (userId) => `${API_BASE_URL}/api/user/${userId}`,
+    create: () => `${API_BASE_URL}/user`,
+    get: (userId) => `${API_BASE_URL}/user/${userId}`,
+    update: (userId) => `${API_BASE_URL}/user/${userId}`,
   },
 
   // Admin endpoints
   admin: {
-    login: () => `${API_BASE_URL}/api/admin/login`,
-    verify: () => `${API_BASE_URL}/api/admin/verify`,
-    dashboard: () => `${API_BASE_URL}/api/admin/dashboard`,
-    orders: () => `${API_BASE_URL}/api/admin/orders`,
-    users: () => `${API_BASE_URL}/api/admin/users`,
-    updateOrderStatus: (orderId) => `${API_BASE_URL}/api/admin/orders/${orderId}/status`,
-    updateUserStatus: (userId) => `${API_BASE_URL}/api/admin/users/${userId}/status`,
-    deleteUser: (userId) => `${API_BASE_URL}/api/admin/users/${userId}`,
+    login: () => `${API_BASE_URL}/admin/login`,
+    verify: () => `${API_BASE_URL}/admin/verify`,
+    dashboard: () => `${API_BASE_URL}/admin/dashboard`,
+    orders: () => `${API_BASE_URL}/admin/orders`,
+    users: () => `${API_BASE_URL}/admin/users`,
+    updateOrderStatus: (orderId) => `${API_BASE_URL}/admin/orders/${orderId}/status`,
+    updateUserStatus: (userId) => `${API_BASE_URL}/admin/users/${userId}/status`,
+    deleteUser: (userId) => `${API_BASE_URL}/admin/users/${userId}`,
   },
 
   // Restaurant endpoints
   restaurants: {
-    getAll: () => `${API_BASE_URL}/api/restaurants`,
-    getById: (id) => `${API_BASE_URL}/api/restaurants/${id}`,
-    create: () => `${API_BASE_URL}/api/restaurants`,
-    update: (id) => `${API_BASE_URL}/api/restaurants/${id}`,
-    delete: (id) => `${API_BASE_URL}/api/restaurants/${id}`,
-    getMenu: (id) => `${API_BASE_URL}/api/restaurants/${id}/menu`,
+    getAll: () => `${API_BASE_URL}/restaurants`,
+    getById: (id) => `${API_BASE_URL}/restaurants/${id}`,
+    create: () => `${API_BASE_URL}/restaurants`,
+    update: (id) => `${API_BASE_URL}/restaurants/${id}`,
+    delete: (id) => `${API_BASE_URL}/restaurants/${id}`,
+    getMenu: (id) => `${API_BASE_URL}/restaurants/${id}/menu`,
   },
 
   // Food endpoints
   foods: {
-    getAll: () => `${API_BASE_URL}/api/foods`,
-    getById: (id) => `${API_BASE_URL}/api/foods/${id}`,
-    create: () => `${API_BASE_URL}/api/foods`,
-    update: (id) => `${API_BASE_URL}/api/foods/${id}`,
-    delete: (id) => `${API_BASE_URL}/api/foods/${id}`,
-    getCategories: () => `${API_BASE_URL}/api/foods/categories`,
+    getAll: () => `${API_BASE_URL}/foods`,
+    getById: (id) => `${API_BASE_URL}/foods/${id}`,
+    create: () => `${API_BASE_URL}/foods`,
+    update: (id) => `${API_BASE_URL}/foods/${id}`,
+    delete: (id) => `${API_BASE_URL}/foods/${id}`,
+    getCategories: () => `${API_BASE_URL}/foods/categories`,
   },
 };
 
