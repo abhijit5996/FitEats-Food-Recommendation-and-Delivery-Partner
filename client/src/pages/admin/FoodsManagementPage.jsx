@@ -287,9 +287,14 @@ const FoodsManagementPage = () => {
         fetchFoods();
         setShowModal(false);
         resetForm();
+      } else {
+        const errorData = await response.json();
+        console.error('Server error:', errorData);
+        alert(`Error: ${errorData.message || 'Failed to save food item'}`);
       }
     } catch (error) {
       console.error('Error saving food:', error);
+      alert('Network error. Please check your connection and try again.');
     }
   };
 
@@ -566,6 +571,21 @@ const FoodsManagementPage = () => {
                         placeholder="0.00"
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-200 mb-2">
+                      Description *
+                    </label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      required
+                      rows="4"
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#ffc107] focus:border-transparent transition-all resize-vertical"
+                      placeholder="Describe the food item..."
+                    />
                   </div>
 
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
