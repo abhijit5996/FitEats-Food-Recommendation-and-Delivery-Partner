@@ -6,6 +6,9 @@ const FoodCard = ({ food, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
   
+  // Get the food ID - support both _id and id properties
+  const foodId = food._id || food.id;
+  
   const handleIncrement = () => {
     setQuantity(prev => prev + 1);
   };
@@ -91,9 +94,21 @@ const FoodCard = ({ food, onAddToCart }) => {
           >
             Add to Cart
           </button>
-          <button className="btn btn-outline btn-food-card">
-            View Recipe
-          </button>
+          {foodId ? (
+            <Link 
+              to={`/recipe/${foodId}`}
+              className="btn btn-outline btn-food-card"
+            >
+              View Recipe
+            </Link>
+          ) : (
+            <button 
+              className="btn btn-outline btn-food-card opacity-50 cursor-not-allowed"
+              disabled
+            >
+              View Recipe
+            </button>
+          )}
         </div>
       </div>
     </div>

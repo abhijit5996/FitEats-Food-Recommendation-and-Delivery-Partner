@@ -103,7 +103,7 @@ export const getFoodById = async (req, res) => {
       return res.status(404).json({ message: 'Food item not found' });
     }
 
-    res.status(200).json({ food });
+    res.status(200).json(food);
   } catch (error) {
     console.error('Get food error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
