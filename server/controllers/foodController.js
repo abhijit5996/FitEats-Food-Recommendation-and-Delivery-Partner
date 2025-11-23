@@ -1,5 +1,6 @@
 import Food from '../models/Food.js';
 import Restaurant from '../models/Restaurant.js';
+import User from '../models/User.js';
 
 // Get all foods
 export const getAllFoods = async (req, res) => {
@@ -10,7 +11,8 @@ export const getAllFoods = async (req, res) => {
       search = '', 
       category = '', 
       restaurant = '',
-      isHealthy = ''
+      isHealthy = '',
+      clerkUserId = '' // Optional: for preference-based filtering
     } = req.query;
     
     let query = { isActive: true };
@@ -32,6 +34,43 @@ export const getAllFoods = async (req, res) => {
     
     if (isHealthy !== '') {
       query.isHealthy = isHealthy === 'true';
+    }
+
+    // Apply user preferences if userId is provided
+    if (clerkUserId) {
+      const user = await User.findOne({ clerkUserId });
+      
+      if (user && user.hasCompletedPreferences && user.preferences) {
+        const { preferences } = user;
+        
+        // Filter by allergies
+        if (preferences.allergies && preferences.allergies.length > 0) {
+          query.allergens = { 
+            $not: { 
+              $elemMatch: { 
+                $in: preferences.allergies.map(a => new RegExp(a, 'i'))
+              }
+            }
+          };
+        }
+
+        // Filter by spice level
+        if (preferences.spiceLevel) {
+          const spiceLevels = {
+            'mild': ['mild'],
+            'medium': ['mild', 'medium'],
+            'spicy': ['mild', 'medium', 'spicy']
+          };
+          
+          const allowedLevels = spiceLevels[preferences.spiceLevel] || ['mild', 'medium', 'spicy'];
+          query.spiceLevel = { $in: allowedLevels };
+        }
+
+        // Prioritize healthy foods if user is health conscious
+        if (preferences.healthConscious) {
+          query.isHealthy = true;
+        }
+      }
     }
 
     const foods = await Food.find(query)

@@ -8,6 +8,7 @@ import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import restaurantRoutes from './routes/restaurantRoutes.js';
 import foodRoutes from './routes/foodRoutes.js';
+import recommendationRoutes from './routes/recommendationRoutes.js';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/foods', foodRoutes);
+app.use('/api/recommendations', recommendationRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

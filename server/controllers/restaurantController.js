@@ -1,19 +1,57 @@
 import Restaurant from '../models/Restaurant.js';
 import Food from '../models/Food.js';
+import User from '../models/User.js';
 
 // Get all restaurants
 export const getAllRestaurants = async (req, res) => {
   try {
-    const { page = 1, limit = 10, search = '' } = req.query;
+    const { 
+      page = 1, 
+      limit = 10, 
+      search = '',
+      clerkUserId = '' // Optional: for preference-based filtering
+    } = req.query;
     
-    const query = search 
+    let query = search 
       ? { name: { $regex: search, $options: 'i' }, isActive: true }
       : { isActive: true };
 
-    const restaurants = await Restaurant.find(query)
+    let restaurants = await Restaurant.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
+
+    // Apply user preferences if userId is provided
+    if (clerkUserId) {
+      const user = await User.findOne({ clerkUserId });
+      
+      if (user && user.hasCompletedPreferences && user.preferences) {
+        const { preferences } = user;
+        
+        // Filter by cuisine preferences
+        if (preferences.cuisinePreferences && preferences.cuisinePreferences.length > 0) {
+          restaurants = restaurants.filter(restaurant => {
+            if (!restaurant.cuisines || restaurant.cuisines.length === 0) return false;
+            
+            const restaurantCuisines = restaurant.cuisines.map(c => c.toLowerCase());
+            const userCuisines = preferences.cuisinePreferences.map(c => c.toLowerCase());
+            
+            return restaurantCuisines.some(rc => 
+              userCuisines.some(uc => rc.includes(uc) || uc.includes(rc))
+            );
+          });
+        }
+
+        // Prioritize health-focused restaurants if user is health conscious
+        if (preferences.healthConscious) {
+          restaurants = restaurants.sort((a, b) => {
+            if (a.isHealthFocused && !b.isHealthFocused) return -1;
+            if (!a.isHealthFocused && b.isHealthFocused) return 1;
+            return b.rating - a.rating;
+          });
+        }
+      }
+    }
 
     const total = await Restaurant.countDocuments(query);
 

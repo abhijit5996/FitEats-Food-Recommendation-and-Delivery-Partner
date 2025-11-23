@@ -11,24 +11,80 @@ import { endpoints } from '../config/api.js';
 
 const HomePage = () => {
   const { user } = useUser();
-  const preferences = null;
   const { addItem } = useCart();
   
   const [featuredFoods, setFeaturedFoods] = useState([]);
   const [recommendedRestaurants, setRecommendedRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isPersonalized, setIsPersonalized] = useState(false);
   
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       
       try {
-        // Fetch foods from backend API
+        // Check if user is logged in and has preferences
+        if (user) {
+          try {
+            // Try to fetch personalized recommendations
+            const foodsResponse = await fetch(`/api/recommendations/foods/${user.id}`);
+            const restaurantsResponse = await fetch(`/api/recommendations/restaurants/${user.id}`);
+            
+            if (foodsResponse.ok && restaurantsResponse.ok) {
+              const foodsData = await foodsResponse.json();
+              const restaurantsData = await restaurantsResponse.json();
+              
+              if (foodsData.success && foodsData.personalized) {
+                // Transform the food data
+                const transformedFoods = foodsData.foods?.map(food => ({
+                  id: String(food._id || food.id),
+                  name: String(food.name || ''),
+                  description: String(food.description || ''),
+                  price: Number(food.price || 0),
+                  image: String(food.image || ''),
+                  rating: Number(food.rating || 4.0),
+                  reviewCount: Number(food.reviewCount || 0),
+                  isHealthy: Boolean(food.isHealthy),
+                  restaurant: String(food.restaurantName || (food.restaurant?.name) || ''),
+                  restaurantId: String(food.restaurant?._id || food.restaurant || food.restaurantId || ''),
+                  category: String(food.category || '')
+                })) || [];
+
+                setFeaturedFoods(transformedFoods);
+                setIsPersonalized(true);
+              }
+              
+              if (restaurantsData.success && restaurantsData.personalized) {
+                // Transform the restaurant data
+                const transformedRestaurants = restaurantsData.restaurants?.map(restaurant => ({
+                  id: String(restaurant._id || restaurant.id),
+                  name: String(restaurant.name || ''),
+                  image: String(restaurant.image || ''),
+                  rating: Number(restaurant.rating || 4.0),
+                  reviewCount: Number(restaurant.reviewCount || 0),
+                  location: String(restaurant.location || ''),
+                  deliveryTime: String(restaurant.deliveryTime || '30-40'),
+                  distance: String(restaurant.distance || '2.5'),
+                  cuisines: Array.isArray(restaurant.cuisines) ? restaurant.cuisines.map(c => String(c)) : [],
+                  isHealthFocused: Boolean(restaurant.isHealthFocused)
+                })) || [];
+
+                setRecommendedRestaurants(transformedRestaurants);
+              }
+              
+              setLoading(false);
+              return;
+            }
+          } catch (error) {
+            console.log('Could not fetch personalized recommendations, falling back to all items:', error);
+          }
+        }
+        
+        // Fallback: Fetch all foods and restaurants
         const foodsResponse = await fetch(endpoints.foods.getAll());
         const foodsData = await foodsResponse.json();
         
-        // Transform the food data to match the expected format
         const transformedFoods = foodsData.foods?.map(food => ({
           id: String(food._id || food.id),
           name: String(food.name || ''),
@@ -43,11 +99,9 @@ const HomePage = () => {
           category: String(food.category || '')
         })) || [];
 
-        // Fetch restaurants from backend API
         const restaurantsResponse = await fetch(endpoints.restaurants.getAll());
         const restaurantsData = await restaurantsResponse.json();
         
-        // Transform the restaurant data to match the expected format
         const transformedRestaurants = restaurantsData.restaurants?.map(restaurant => ({
           id: String(restaurant._id || restaurant.id),
           name: String(restaurant.name || ''),
@@ -61,41 +115,12 @@ const HomePage = () => {
           isHealthFocused: Boolean(restaurant.isHealthFocused)
         })) || [];
 
-        console.log('Fetched foods:', transformedFoods);
-        console.log('Fetched restaurants:', transformedRestaurants);
-
-        // Apply preference-based filtering if user preferences exist
-        if (preferences) {
-          const filteredFoods = transformedFoods.filter(food => {
-            if (preferences.dietaryRestrictions && preferences.dietaryRestrictions.includes('Vegetarian') && food.name.toLowerCase().includes('chicken')) {
-              return false;
-            }
-            return true;
-          });
-          
-          if (preferences.healthConscious) {
-            filteredFoods.sort((a, b) => (b.isHealthy ? 1 : 0) - (a.isHealthy ? 1 : 0));
-          }
-          
-          setFeaturedFoods(filteredFoods);
-          
-          const filteredRestaurants = transformedRestaurants.filter(restaurant => {
-            return restaurant.cuisines.some(cuisine => 
-              preferences.cuisinePreferences && preferences.cuisinePreferences.includes(cuisine)
-            );
-          });
-          
-          setRecommendedRestaurants(
-            filteredRestaurants.length > 0 ? filteredRestaurants : transformedRestaurants
-          );
-        } else {
-          setFeaturedFoods(transformedFoods);
-          setRecommendedRestaurants(transformedRestaurants);
-        }
+        setFeaturedFoods(transformedFoods);
+        setRecommendedRestaurants(transformedRestaurants);
+        setIsPersonalized(false);
         
       } catch (error) {
         console.error('Error fetching data:', error);
-        // Set empty arrays on error
         setFeaturedFoods([]);
         setRecommendedRestaurants([]);
       }
@@ -104,7 +129,7 @@ const HomePage = () => {
     };
     
     fetchData();
-  }, [preferences]);
+  }, [user]);
   
   // Filter restaurants based on search query
   const filteredRestaurants = recommendedRestaurants.filter((r) =>
@@ -321,7 +346,7 @@ const HomePage = () => {
               viewport={{ once: true }}
               className="text-3xl md:text-4xl font-bold text-[#1a1a2e]"
             >
-              {preferences ? 'Recommended for You' : 'Featured Foods'}
+              {isPersonalized ? 'Recommended for You' : 'Featured Foods'}
             </motion.h2>
             <Link to="/foods" className="text-[#ffc107] hover:text-[#e6ac00] font-medium flex items-center">
               View All <ArrowRight className="w-4 h-4 ml-1" />

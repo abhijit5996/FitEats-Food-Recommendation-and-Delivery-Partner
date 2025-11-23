@@ -8,10 +8,10 @@ const AuthRedirector = () => {
 
   useEffect(() => {
     if (isLoaded && user) {
-      // Check if user has preferences
+      // Check if user has completed preferences
       const checkPreferences = async () => {
         try {
-          const response = await fetch(`/api/preferences/check/${user.id}`);
+          const response = await fetch(`/api/user/preferences/check/${user.id}`);
           
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -19,23 +19,17 @@ const AuthRedirector = () => {
           
           const data = await response.json();
           
-          if (data.success) {
-            if (data.exists) {
-              // User has preferences, redirect to home
-              navigate('/');
-            } else {
-              // User doesn't have preferences, redirect to preferences form
-              navigate('/preferences');
-            }
-          } else {
-            console.error('Error checking preferences:', data.message);
-            // Fallback to home page if there's an error
+          if (data.hasCompletedPreferences) {
+            // User has completed preferences, redirect to home
             navigate('/');
+          } else {
+            // User hasn't completed preferences, redirect to preferences form
+            navigate('/preferences');
           }
         } catch (error) {
           console.error('Error checking preferences:', error);
-          // Fallback to home page if there's an error
-          navigate('/');
+          // Fallback to preferences form if there's an error
+          navigate('/preferences');
         }
       };
 

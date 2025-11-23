@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
 import { useCart } from '../context/CartContext';
 import RecipeCard from '../components/RecipeCard';
 import { motion } from 'framer-motion';
@@ -7,30 +8,48 @@ import { endpoints } from '../config/api';
 
 
 const FoodPage = () => {
+  const { user } = useUser();
   const { addItem } = useCart();
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [isPersonalized, setIsPersonalized] = useState(false);
 
   useEffect(() => {
     const fetchFoods = async () => {
       try {
+        // Try to fetch personalized foods if user is logged in
+        if (user) {
+          try {
+            const response = await fetch(`/api/recommendations/foods/${user.id}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success && data.personalized) {
+                console.log('Fetched personalized foods:', data.foods);
+                setFoods(data.foods || []);
+                setIsPersonalized(true);
+                setLoading(false);
+                return;
+              }
+            }
+          } catch (error) {
+            console.log('Could not fetch personalized foods, falling back to all foods:', error);
+          }
+        }
+        
+        // Fallback to all foods
         const response = await fetch(endpoints.foods.getAll());
         if (response.ok) {
           const data = await response.json();
-          console.log('Fetched foods:', data.foods);
-          console.log('Number of foods:', data.foods?.length);
-          console.log('First food item:', data.foods?.[0]);
-          console.log('Full first food item:', JSON.stringify(data.foods?.[0], null, 2));
+          console.log('Fetched all foods:', data.foods);
           setFoods(data.foods || []);
+          setIsPersonalized(false);
         } else {
           console.error('Failed to fetch foods');
-          // Fallback to empty array if API fails
           setFoods([]);
         }
       } catch (error) {
         console.error('Error fetching foods:', error);
-        // Fallback to empty array if API fails
         setFoods([]);
       } finally {
         setLoading(false);
@@ -38,7 +57,7 @@ const FoodPage = () => {
     };
 
     fetchFoods();
-  }, []);
+  }, [user]);
 
   const filteredFoods = filter === 'all' 
     ? foods 
@@ -77,8 +96,20 @@ const FoodPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-3xl md:text-4xl font-bold mb-8 text-white"
         >
-          All Foods
+          {isPersonalized ? 'Foods for You' : 'All Foods'}
         </motion.h1>
+
+        {isPersonalized && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-green-500/20 border border-green-500/30 rounded-lg"
+          >
+            <p className="text-green-300 text-sm">
+              ✨ These foods are personalized based on your preferences and dietary restrictions
+            </p>
+          </motion.div>
+        )}
 
         {/* Filter Options */}
         <motion.div 
