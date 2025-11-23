@@ -135,6 +135,7 @@ const FoodsManagementPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [editingFood, setEditingFood] = useState(null);
+  const [hasRecipe, setHasRecipe] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRestaurant, setFilterRestaurant] = useState('');
   const { getAuthHeaders } = useAdmin();
@@ -323,6 +324,8 @@ const FoodsManagementPage = () => {
       tips: food.tips ? food.tips.join('\n') : '',
       cuisine: food.cuisine || 'Indian'
     });
+    // Check if food has recipe data
+    setHasRecipe(food.instructions && food.instructions.length > 0);
     setShowModal(true);
   };
 
@@ -376,6 +379,7 @@ const FoodsManagementPage = () => {
       tips: '',
       cuisine: 'Indian'
     });
+    setHasRecipe(false);
     setEditingFood(null);
   };
 
@@ -567,17 +571,34 @@ const FoodsManagementPage = () => {
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <h3 className="text-lg font-medium text-white">Recipe Details</h3>
-                      <p className="text-sm text-gray-400">Add cooking instructions, ingredients, and tips</p>
+                      <p className="text-sm text-gray-400">
+                        {hasRecipe ? 'Recipe added - click to edit' : 'Add cooking instructions, ingredients, and tips'}
+                      </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setShowRecipeModal(true)}
-                      className="px-6 py-2 bg-[#ffc107] text-[#1a1a2e] font-medium rounded-lg hover:bg-[#ffc107]/90 transition-all flex items-center gap-2"
+                      className={`px-6 py-2 font-medium rounded-lg transition-all flex items-center gap-2 ${
+                        hasRecipe
+                          ? 'bg-green-600 text-white hover:bg-green-700'
+                          : 'bg-[#ffc107] text-[#1a1a2e] hover:bg-[#ffc107]/90'
+                      }`}
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                      Add Recipe
+                      {hasRecipe ? (
+                        <>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit Recipe
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                          Add Recipe
+                        </>
+                      )}
                     </button>
                   </div>
 
@@ -791,13 +812,13 @@ const FoodsManagementPage = () => {
             {/* Modal Header */}
             <div className="bg-gradient-to-r from-[#ffc107] to-[#ff6b35] px-6 py-4 sticky top-0">
               <h3 className="text-xl font-bold text-[#1a1a2e]">
-                Add Recipe Details
+                {hasRecipe ? 'Edit Recipe Details' : 'Add Recipe Details'}
               </h3>
             </div>
             
             {/* Modal Body */}
             <div className="p-6">
-              <form onSubmit={(e) => { e.preventDefault(); setShowRecipeModal(false); }} className="space-y-6">
+              <form onSubmit={(e) => { e.preventDefault(); setHasRecipe(true); setShowRecipeModal(false); }} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-200 mb-2">
