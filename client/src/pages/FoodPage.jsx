@@ -179,7 +179,7 @@ const FoodPage = () => {
                 name: String(food.name || 'Unknown Food'),
                 description: String(food.description || 'No description available'),
                 price: Number(food.price || 0),
-                image: String(food.image || '/api/placeholder/300/200'),
+                image: String(food.image || 'https://placehold.co/300x200/1a1a2e/ffc107?text=No+Image'),
                 rating: Number(food.rating || 4.0),
                 reviewCount: Number(food.reviewCount || 0),
                 restaurant: String(food.restaurant?.name || food.restaurant || 'Unknown Restaurant'),
