@@ -9,6 +9,7 @@ const RestaurantsPage = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isPersonalized, setIsPersonalized] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     cuisine: '',
@@ -25,12 +26,44 @@ const RestaurantsPage = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
+        // Try to fetch personalized restaurants if user is logged in
+        if (user) {
+          try {
+            const response = await fetch(`/api/recommendations/restaurants/${user.id}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success && data.personalized) {
+                console.log('Fetched personalized restaurants:', data.restaurants);
+                const transformedRestaurants = data.restaurants?.map(restaurant => ({
+                  id: String(restaurant._id || restaurant.id),
+                  name: String(restaurant.name || ''),
+                  image: String(restaurant.image || ''),
+                  rating: Number(restaurant.rating || 4.0),
+                  reviewCount: Number(restaurant.reviewCount || 0),
+                  location: String(restaurant.location || ''),
+                  deliveryTime: String(restaurant.deliveryTime || '30-40'),
+                  distance: String(restaurant.distance || '2.5'),
+                  cuisines: Array.isArray(restaurant.cuisines) ? restaurant.cuisines : [],
+                  isHealthFocused: Boolean(restaurant.isHealthFocused)
+                })) || [];
+                
+                setRestaurants(transformedRestaurants);
+                setIsPersonalized(true);
+                setLoading(false);
+                return;
+              }
+            }
+          } catch (error) {
+            console.log('Could not fetch personalized restaurants, falling back to all restaurants:', error);
+          }
+        }
+        
+        // Fallback to all restaurants
         const response = await fetch(endpoints.restaurants.getAll());
         if (response.ok) {
           const data = await response.json();
-          console.log('Fetched restaurants:', data.restaurants);
+          console.log('Fetched all restaurants:', data.restaurants);
           
-          // Transform restaurant data to ensure consistent ID field
           const transformedRestaurants = data.restaurants?.map(restaurant => ({
             id: String(restaurant._id || restaurant.id),
             name: String(restaurant.name || ''),
@@ -44,16 +77,14 @@ const RestaurantsPage = () => {
             isHealthFocused: Boolean(restaurant.isHealthFocused)
           })) || [];
           
-          console.log('Transformed restaurants:', transformedRestaurants);
           setRestaurants(transformedRestaurants);
+          setIsPersonalized(false);
         } else {
           console.error('Failed to fetch restaurants');
-          // Fallback to sample data if API fails
           setRestaurants(getSampleRestaurants());
         }
       } catch (error) {
         console.error('Error fetching restaurants:', error);
-        // Fallback to sample data if API fails
         setRestaurants(getSampleRestaurants());
       } finally {
         setLoading(false);
@@ -61,7 +92,7 @@ const RestaurantsPage = () => {
     };
 
     fetchRestaurants();
-  }, []);
+  }, [user]);
 
   // Sample restaurant data as fallback
   const getSampleRestaurants = () => [
@@ -214,9 +245,22 @@ const RestaurantsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8 text-center"
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Discover Restaurants</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            {isPersonalized ? 'Restaurants for You' : 'Discover Restaurants'}
+          </h1>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Find the perfect restaurant that matches your taste and dietary preferences.
+            {isPersonalized 
+              ? 'These restaurants match your cuisine preferences and dietary needs'
+              : 'Find the perfect restaurant that matches your taste and dietary preferences.'
+            }
+          </p>
+          {isPersonalized && (
+            <div className="mt-4 inline-block p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
+              <p className="text-green-300 text-sm">
+                ✨ Personalized based on your preferences
+              </p>
+            </div>
+          )}
             {preferences && preferences.dietaryRestrictions?.length > 0 && (
               <span> We've applied your dietary preferences to help you find suitable options.</span>
             )}
