@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
-/* Tailwind v4: define design tokens - Updated to match global.css */
+/* Tailwind v4: define design tokens */
 @theme {
-  /* Color palette - Aligned with global.css */
+  /* Color palette */
   --color-background: #1a1a2e;
   --color-foreground: #ffffff;
   --color-card: #ffffff;
@@ -20,11 +20,8 @@
   --color-destructive: #dc3545;
   --color-destructive-foreground: #ffffff;
   --color-border: rgba(255, 255, 255, 0.1);
-
-  /* ✅ Fixed input colors */
   --color-input: #1a1a2e;
   --color-input-background: #ffffff;
-
   --color-switch-background: #cbced4;
   --color-ring: #ffc107;
   --color-chart-1: #ffc107;
@@ -32,13 +29,15 @@
   --color-chart-3: #28a745;
   --color-chart-4: #17a2b8;
   --color-chart-5: #6f42c1;
+  
+  /* Border radius */
   --radius: 0.5rem;
   
   /* Font families */
   --font-heading: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
   --font-body: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
   
-  /* Sidebar colors from global.css */
+  /* Sidebar colors */
   --color-sidebar: #1a1a2e;
   --color-sidebar-foreground: #ffffff;
   --color-sidebar-primary: #ffc107;
@@ -88,7 +87,7 @@
   .card h4, 
   .card h5, 
   .card h6 {
-    color: var(--color-card-foreground) !important;
+    color: var(--color-card-foreground);
     font-weight: 600;
   }
 
@@ -96,59 +95,59 @@
   .card li, 
   .card span,
   .card div {
-    color: var(--color-card-foreground) !important;
+    color: var(--color-card-foreground);
   }
 
   .card .text-muted {
-    color: var(--color-muted-foreground) !important;
+    color: var(--color-muted-foreground);
   }
 
   .card .step, 
   .card .step p {
-    color: var(--color-card-foreground) !important;
+    color: var(--color-card-foreground);
     font-weight: 500;
   }
 
   .card .step-number {
-    background-color: var(--color-primary) !important;
-    color: var(--color-primary-foreground) !important;
-    font-weight: 600 !important;
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+    font-weight: 600;
   }
 
   .card .checkmark,
   .card .bullet {
-    color: var(--color-primary) !important;
+    color: var(--color-primary);
     font-weight: 600;
   }
 
   .text-muted {
-    color: var(--color-muted-foreground) !important;
+    color: var(--color-muted-foreground);
   }
 
   .text-disabled {
-    color: #a1a5b7 !important;
+    color: #a1a5b7;
   }
 
   .card .text-disabled {
-    color: #8e95a9 !important;
+    color: #8e95a9;
   }
 
   .card ul li,
   .card ol li {
-    color: var(--color-card-foreground) !important;
+    color: var(--color-card-foreground);
     margin-bottom: 0.5rem;
   }
 
   .nutrition-value {
-    color: var(--color-primary) !important;
-    font-weight: 700 !important;
-    font-size: 1.5rem !important;
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 1.5rem;
   }
 
   .nutrition-label {
-    color: var(--color-card-foreground) !important;
-    font-weight: 500 !important;
-    font-size: 0.875rem !important;
+    color: var(--color-card-foreground);
+    font-weight: 500;
+    font-size: 0.875rem;
     text-transform: capitalize;
   }
 }
@@ -237,16 +236,17 @@
     transform: translateY(-5px);
   }
 
-  /* ✅ Fixed input styling */
+  /* Fixed input styling with proper contrast */
   .input-field {
     width: 100%;
     padding: 0.75rem 1rem;
     background-color: var(--color-input-background);
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: var(--radius);
     transition: all 0.2s ease;
     color: var(--color-input);
     font-weight: 500;
+    font-size: 1rem;
   }
 
   .input-field:focus {
@@ -259,6 +259,7 @@
 
   .input-field::placeholder {
     color: var(--color-muted-foreground);
+    opacity: 0.7;
   }
 
   .section-padding {
@@ -271,8 +272,9 @@
   .text-gradient {
     background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   .animate-float {
@@ -292,15 +294,15 @@
   }
 
   .text-light {
-    color: var(--color-foreground) !important;
+    color: var(--color-foreground);
   }
 
   .text-white {
-    color: #ffffff !important;
+    color: #ffffff;
   }
 
   .text-card {
-    color: var(--color-card-foreground) !important;
+    color: var(--color-card-foreground);
   }
 }
 
@@ -394,6 +396,7 @@ input:focus-visible {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+  line-clamp: 1;
 }
 
 .line-clamp-2 {
@@ -401,6 +404,7 @@ input:focus-visible {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .line-clamp-3 {
@@ -408,4 +412,5 @@ input:focus-visible {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
 }
