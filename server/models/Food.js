@@ -67,6 +67,34 @@ const foodSchema = new mongoose.Schema({
     type: String,
     enum: ['mild', 'medium', 'spicy'],
     default: 'medium'
+  },
+  // Recipe-specific fields
+  prepTime: {
+    type: String,
+    default: '15 mins'
+  },
+  cookTime: {
+    type: String,
+    default: '30 mins'
+  },
+  servings: {
+    type: Number,
+    default: 2
+  },
+  difficulty: {
+    type: String,
+    enum: ['Easy', 'Medium', 'Hard'],
+    default: 'Medium'
+  },
+  instructions: [{
+    type: String
+  }],
+  tips: [{
+    type: String
+  }],
+  cuisine: {
+    type: String,
+    default: 'Indian'
   }
 }, {
   timestamps: true

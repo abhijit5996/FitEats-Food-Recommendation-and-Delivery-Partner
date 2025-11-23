@@ -1,32 +1,46 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { apiRequest, endpoints } from '../config/api';
 
 const RecipePage = () => {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   useEffect(() => {
-    const fetchRecipe = () => {
-      setLoading(true);
-      
-      // Sample recipes with slugs
-      const sampleRecipes = [
-      
-  
-      ];
-      
-      // Find recipe by slug (id parameter)
-      const foundRecipe = sampleRecipes.find(r => r.slug === id);
-      setRecipe(foundRecipe);
-      setLoading(false);
+    const fetchRecipe = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const data = await apiRequest(endpoints.foods.getById(id));
+        setRecipe(data);
+      } catch (err) {
+        console.error('Error fetching recipe:', err);
+        setError(err.message || 'Failed to load recipe');
+      } finally {
+        setLoading(false);
+      }
     };
     
-    fetchRecipe();
-  }, [id]);
-
-  if (loading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div></div>;
+    if (id) {
+      fetchRecipe();
+    }
+  }, [id]);  if (loading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div></div>;
+  
+  if (error) return (
+    <div className="py-12">
+      <div className="container-custom">
+        <div className="card p-8 text-center text-white">
+          <h2 className="text-2xl font-bold mb-4">Error Loading Recipe</h2>
+          <p className="text-gray-300 mb-6">{error}</p>
+          <Link to="/" className="btn btn-primary px-6 py-3">Back to Home</Link>
+        </div>
+      </div>
+    </div>
+  );
   
   if (!recipe) return (
     <div className="py-12">
@@ -59,21 +73,31 @@ const RecipePage = () => {
               </svg>
               Back to Home
             </Link>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">{recipe.foodName} Recipe</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">{recipe.name} Recipe</h1>
             <div className="flex flex-wrap gap-2 mb-4">
-              {recipe.dietaryInfo.map((info, index) => (
-                <span key={index} className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium">
-                  {info}
+              {recipe.category && (
+                <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium">
+                  {recipe.category}
                 </span>
-              ))}
+              )}
+              {recipe.cuisine && (
+                <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium">
+                  {recipe.cuisine}
+                </span>
+              )}
+              {recipe.isHealthy && (
+                <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-medium">
+                  Healthy
+                </span>
+              )}
             </div>
             <p className="text-gray-300 mb-6">{recipe.description}</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               {[
-                {label: 'Prep Time', value: recipe.prepTime}, 
-                {label: 'Cook Time', value: recipe.cookTime}, 
-                {label: 'Servings', value: recipe.servings}, 
-                {label: 'Difficulty', value: recipe.difficulty}
+                {label: 'Prep Time', value: recipe.prepTime || '15 mins'}, 
+                {label: 'Cook Time', value: recipe.cookTime || '30 mins'}, 
+                {label: 'Servings', value: recipe.servings || 2}, 
+                {label: 'Difficulty', value: recipe.difficulty || 'Medium'}
               ].map(item => (
                 <div key={item.label} className="bg-white/10 p-4 rounded-lg text-center">
                   <span className="block text-gray-400 text-sm">{item.label}</span>
@@ -89,41 +113,53 @@ const RecipePage = () => {
           
           <motion.div className="mb-8 card p-6" variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
             <h2 className="text-2xl font-bold mb-4">Nutritional Information</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {Object.entries(recipe.nutritionalInfo).map(([key, value]) => (
-                <div key={key} className="text-center">
-                  <div className="text-2xl font-bold text-primary">{value}{key !== 'calories' && 'g'}</div>
-                  <div className="text-gray-400 text-sm capitalize">{key}</div>
-                </div>
-              ))}
-            </div>
+            {recipe.nutritionalInfo ? (
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {Object.entries(recipe.nutritionalInfo).map(([key, value]) => (
+                  <div key={key} className="text-center">
+                    <div className="text-2xl font-bold text-primary">{value}{key !== 'calories' && 'g'}</div>
+                    <div className="text-gray-400 text-sm capitalize">{key}</div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400">Nutritional information not available</p>
+            )}
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <motion.div className="card p-6" variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
               <h2 className="text-2xl font-bold mb-4">Ingredients</h2>
-              <ul className="space-y-3 text-gray-300">
-                {recipe.ingredients.map((ing, i) => (
-                  <li key={i} className="flex items-start">
-                    <span className="text-primary mr-2 mt-1">&#10003;</span>
-                    <span>{ing}</span>
-                  </li>
-                ))}
-              </ul>
+              {recipe.ingredients && recipe.ingredients.length > 0 ? (
+                <ul className="space-y-3 text-gray-300">
+                  {recipe.ingredients.map((ing, i) => (
+                    <li key={i} className="flex items-start">
+                      <span className="text-primary mr-2 mt-1">&#10003;</span>
+                      <span>{ing}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-400">Ingredients not available</p>
+              )}
             </motion.div>
             
             <motion.div className="card p-6" variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}>
               <h2 className="text-2xl font-bold mb-4">Instructions</h2>
-              <ol className="space-y-4">
-                {recipe.instructions.map((step, i) => (
-                  <li key={i} className="flex">
-                    <span className="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-primary/20 text-primary font-bold text-sm mr-4">
-                      {i + 1}
-                    </span>
-                    <span className="text-gray-300">{step}</span>
-                  </li>
-                ))}
-              </ol>
+              {recipe.instructions && recipe.instructions.length > 0 ? (
+                <ol className="space-y-4">
+                  {recipe.instructions.map((step, i) => (
+                    <li key={i} className="flex">
+                      <span className="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-primary/20 text-primary font-bold text-sm mr-4">
+                        {i + 1}
+                      </span>
+                      <span className="text-gray-300">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p className="text-gray-400">Instructions not available</p>
+              )}
             </motion.div>
           </div>
           
