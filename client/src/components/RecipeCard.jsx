@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 const RecipeCard = ({ food, showRestaurant }) => {
   const { addItem } = useCart();
+  const [imageError, setImageError] = useState(false);
   
   // Safe data extraction with fallbacks
   const safeFood = {
@@ -10,7 +12,7 @@ const RecipeCard = ({ food, showRestaurant }) => {
     name: String(food?.name || 'Unnamed Item'),
     description: String(food?.description || 'No description available'),
     price: Number(food?.price || 0),
-    image: String(food?.image || '/api/placeholder/300/200'),
+    image: String(food?.image || 'https://placehold.co/300x200/1a1a2e/ffc107?text=No+Image'),
     rating: Number(food?.rating || 4.0),
     reviewCount: Number(food?.reviewCount || 0),
     restaurant: String(food?.restaurant || 'Restaurant'),
@@ -49,7 +51,10 @@ const RecipeCard = ({ food, showRestaurant }) => {
               alt={safeFood.name}
               className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
               onError={(e) => {
-                e.target.src = '/api/placeholder/300/200';
+                if (!imageError) {
+                  setImageError(true);
+                  e.target.src = 'https://placehold.co/300x200/1a1a2e/ffc107?text=No+Image';
+                }
               }}
             />
             {safeFood.isHealthy && (

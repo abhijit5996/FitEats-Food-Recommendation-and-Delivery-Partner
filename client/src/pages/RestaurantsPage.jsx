@@ -261,10 +261,6 @@ const RestaurantsPage = () => {
               </p>
             </div>
           )}
-            {preferences && preferences.dietaryRestrictions?.length > 0 && (
-              <span> We've applied your dietary preferences to help you find suitable options.</span>
-            )}
-          </p>
         </motion.div>
         
         {/* Mobile Filter Button */}
