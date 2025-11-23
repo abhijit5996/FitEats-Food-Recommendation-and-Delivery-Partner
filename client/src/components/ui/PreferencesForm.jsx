@@ -69,6 +69,10 @@ const PreferencesForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log('📝 Preferences form submitted');
+    console.log('👤 User info:', { id: user.id, email: user.primaryEmailAddress?.emailAddress });
+    console.log('📋 Form data:', formData);
+    
     if (!formData.healthGoals) {
       alert('Please select a health goal');
       return;
@@ -77,39 +81,47 @@ const PreferencesForm = () => {
     setIsSubmitting(true);
     
     try {
+      const payload = {
+        clerkUserId: user.id,
+        email: user.primaryEmailAddress?.emailAddress || user.emailAddresses[0]?.emailAddress,
+        name: user.fullName || user.firstName || '',
+        preferences: {
+          dietaryRestrictions: formData.dietaryRestrictions,
+          cuisinePreferences: formData.favoriteCuisines,
+          healthConscious: formData.healthGoals === 'Weight Loss' || 
+                          formData.healthGoals === 'Better Digestion' || 
+                          formData.healthGoals === 'Manage Medical Condition',
+          allergies: formData.allergies,
+          medicalConditions: formData.customMedicalCondition ? [formData.customMedicalCondition] : [],
+          spiceLevel: formData.spiceTolerance
+        }
+      };
+      
+      console.log('📤 Sending payload:', payload);
+      
       // Save preferences to User model
       const response = await fetch('/api/user/preferences', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          clerkUserId: user.id,
-          email: user.primaryEmailAddress?.emailAddress || user.emailAddresses[0]?.emailAddress,
-          name: user.fullName || user.firstName || '',
-          preferences: {
-            dietaryRestrictions: formData.dietaryRestrictions,
-            cuisinePreferences: formData.favoriteCuisines,
-            healthConscious: formData.healthGoals === 'Weight Loss' || 
-                            formData.healthGoals === 'Better Digestion' || 
-                            formData.healthGoals === 'Manage Medical Condition',
-            allergies: formData.allergies,
-            medicalConditions: formData.customMedicalCondition ? [formData.customMedicalCondition] : [],
-            spiceLevel: formData.spiceTolerance
-          }
-        }),
+        body: JSON.stringify(payload),
       });
       
+      console.log('📡 Response status:', response.status);
+      
       const data = await response.json();
+      console.log('📥 Response data:', data);
       
       if (response.ok) {
+        console.log('✅ Preferences saved successfully, redirecting to home');
         navigate('/');
       } else {
-        console.error('Error saving preferences:', data.message);
+        console.error('❌ Error saving preferences:', data.message);
         alert(`Failed to save preferences: ${data.message}`);
       }
     } catch (error) {
-      console.error('Error saving preferences:', error);
+      console.error('💥 Error saving preferences:', error);
       alert('Failed to save preferences. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
