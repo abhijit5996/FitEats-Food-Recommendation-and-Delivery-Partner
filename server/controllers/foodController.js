@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Food from '../models/Food.js';
 import Restaurant from '../models/Restaurant.js';
 import User from '../models/User.js';

@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     medicalConditions: [String],
     spiceLevel: {
       type: String,
-      enum: ['mild', 'medium', 'spicy'],
+      enum: ['mild', 'medium', 'hot', 'very-hot', 'spicy'],
       default: 'medium'
     }
   },
