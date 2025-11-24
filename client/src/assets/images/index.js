@@ -69,7 +69,7 @@ import GrilledChickenPasta from './grilled-chicken-pasta.jpg';
 import VegAuGratin from './veg-au-gratin.jpg';
 
 // East Indian/Bengali
-import AlooPosto from './aloo-posto.jpg';
+import AlooPosto from './aaloo-posto.webp';
 import Shukto from './shukto.jpg';
 import DhokarDalna from './dhokar-dalna.jpg';
 import CholarDal from './cholar-dal.jpg';

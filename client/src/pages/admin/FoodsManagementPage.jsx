@@ -92,7 +92,7 @@ const foodImages = {
   'grilled-chicken-pasta': GrilledChickenPasta,
   'veg-au-gratin': VegAuGratin,
   // Bengali/Eastern
-  'aloo-posto': AlooPosto,
+  'aaloo-posto': AlooPosto,
   'shukto': Shukto,
   'dhokar-dalna': DhokarDalna,
   'cholar-dal': CholarDal,
