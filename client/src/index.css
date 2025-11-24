@@ -29,14 +29,14 @@
   --color-chart-3: #28a745;
   --color-chart-4: #17a2b8;
   --color-chart-5: #6f42c1;
-  
+
   /* Border radius */
   --radius: 0.5rem;
-  
+
   /* Font families */
   --font-heading: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
   --font-body: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
-  
+
   /* Sidebar colors */
   --color-sidebar: #1a1a2e;
   --color-sidebar-foreground: #ffffff;
@@ -48,18 +48,21 @@
   --color-sidebar-ring: #ffc107;
 }
 
+/* ============================
+   GLOBAL BASE RESET + FIXES
+=============================== */
 @layer base {
   *,
   *::before,
   *::after {
     box-sizing: border-box;
   }
-  
+
   html {
     scroll-behavior: smooth;
     font-size: 16px;
   }
-  
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -68,7 +71,7 @@
     margin: 0;
     padding: 0;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 500;
@@ -77,10 +80,16 @@
     color: var(--color-foreground);
   }
 
+  /* FIXED — removed universal color override for p, li, span 
+     (this was causing text becoming invisible in many sections)
+  */
   p, li, span {
-    color: var(--color-foreground);
+    color: inherit;
   }
 
+  /* ============================
+     CARD-SAFE TEXT COLORS
+  ================================ */
   .card h1, 
   .card h2, 
   .card h3, 
@@ -91,10 +100,10 @@
     font-weight: 600;
   }
 
+  /* FIXED — previously .card div forced dark text everywhere */
   .card p, 
   .card li, 
-  .card span,
-  .card div {
+  .card span {
     color: var(--color-card-foreground);
   }
 
@@ -102,7 +111,7 @@
     color: var(--color-muted-foreground);
   }
 
-  .card .step, 
+  .card .step,
   .card .step p {
     color: var(--color-card-foreground);
     font-weight: 500;
@@ -132,12 +141,6 @@
     color: #8e95a9;
   }
 
-  .card ul li,
-  .card ol li {
-    color: var(--color-card-foreground);
-    margin-bottom: 0.5rem;
-  }
-
   .nutrition-value {
     color: var(--color-primary);
     font-weight: 700;
@@ -150,8 +153,26 @@
     font-size: 0.875rem;
     text-transform: capitalize;
   }
+
+  /* ===========================================
+     FULL GLOBAL FIX — ALL input fields safe now
+  ============================================ */
+  input, textarea, select {
+    background-color: var(--color-input-background) !important;
+    color: var(--color-input) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-muted-foreground) !important;
+    opacity: 1 !important;
+  }
 }
 
+/* ===============================
+   COMPONENT CLASSES
+================================ */
 @layer components {
   .btn {
     display: inline-flex;
@@ -210,7 +231,6 @@
     min-width: 8rem;
     flex: 1;
     text-align: center;
-    box-sizing: border-box;
   }
 
   .container-custom {
@@ -228,7 +248,6 @@
     overflow: hidden;
     transition: all 0.3s ease;
     border: 1px solid var(--color-border);
-    color: var(--color-card-foreground);
   }
 
   .card:hover {
@@ -236,15 +255,15 @@
     transform: translateY(-5px);
   }
 
-  /* Fixed input styling with proper contrast */
+  /* FIX — consistent input fields */
   .input-field {
     width: 100%;
     padding: 0.75rem 1rem;
-    background-color: var(--color-input-background);
+    background-color: var(--color-input-background) !important;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: var(--radius);
     transition: all 0.2s ease;
-    color: var(--color-input);
+    color: var(--color-input) !important;
     font-weight: 500;
     font-size: 1rem;
   }
@@ -268,13 +287,15 @@
   }
 }
 
+/* ===============================
+   UTILITIES
+================================ */
 @layer utilities {
   .text-gradient {
-    background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    background-image: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    color: transparent;
   }
 
   .animate-float {
@@ -292,38 +313,24 @@
   .bg-gradient-dark {
     background: linear-gradient(135deg, var(--color-sidebar-accent) 0%, #40407a 100%);
   }
-
-  .text-light {
-    color: var(--color-foreground);
-  }
-
-  .text-white {
-    color: #ffffff;
-  }
-
-  .text-card {
-    color: var(--color-card-foreground);
-  }
 }
 
+/* ===============================
+   ANIMATIONS
+================================ */
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
 }
 
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
+/* ===============================
+   SCROLLBAR
+================================ */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -348,20 +355,13 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
+/* ===============================
+   RESPONSIVE FIXES
+================================ */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  
-  .btn,
-  .card {
-    transition: none;
-  }
-  
-  .animate-float,
-  .animate-pulse-slow {
-    animation: none;
-  }
+  html { scroll-behavior: auto; }
+  .btn, .card { transition: none; }
+  .animate-float, .animate-pulse-slow { animation: none; }
 }
 
 @media (min-width: 640px) {
@@ -391,12 +391,14 @@ input:focus-visible {
   }
 }
 
+/* ===============================
+   LINE CLAMP FIXES
+================================ */
 .line-clamp-1 {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
-  line-clamp: 1;
 }
 
 .line-clamp-2 {
@@ -404,7 +406,6 @@ input:focus-visible {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
 }
 
 .line-clamp-3 {
@@ -412,5 +413,4 @@ input:focus-visible {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
-  line-clamp: 3;
 }

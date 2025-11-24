@@ -138,15 +138,48 @@ const HomePage = () => {
   
   // Food categories data
   const categories = [
-    { name: 'Pizza', count: 25, image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200&h=200&fit=crop' },
-    { name: 'Broast', count: 18, image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=200&h=200&fit=crop' },
-    { name: 'Chicken', count: 32, image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=200&h=200&fit=crop' },
-    { name: 'Burgers', count: 22, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop' },
-    { name: 'Shakes', count: 15, image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200&h=200&fit=crop' },
-    { name: 'Sandwiches', count: 19, image: 'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=200&h=200&fit=crop' },
-    { name: 'Pasta', count: 28, image: 'https://images.unsplash.com/photo-1621996346565-e3dbc353d364?w=200&h=200&fit=crop' },
-    { name: 'Desserts', count: 21, image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200&h=200&fit=crop' },
-  ];
+  {
+    name: 'Vegetarian',
+    count: 20,
+    image: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?w=200&h=200&fit=crop'
+  },
+  {
+    name: 'Vegan',
+    count: 18,
+    image: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=200&h=200&fit=crop'
+  },
+  {
+    name: 'Gluten-Free',
+    count: 12,
+    image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=200&h=200&fit=crop'
+  },
+  {
+    name: 'Dairy-Free',
+    count: 14,
+    image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=200&h=200&fit=crop'
+  },
+  {
+    name: 'Keto',
+    count: 16,
+    image: 'https://images.unsplash.com/photo-1510627498534-cf7e9002facc?w=200&h=200&fit=crop'
+  },
+  {
+    name: 'Paleo',
+    count: 10,
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop'
+  },
+  {
+    name: 'Low-Carb',
+    count: 15,
+    image: 'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?w=200&h=200&fit=crop'
+  },
+  {
+    name: 'Low-Fat',
+    count: 11,
+    image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=200&h=200&fit=crop'
+  }
+];
+
 
   // Popular restaurant logos
   const restaurantLogos = [
