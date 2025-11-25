@@ -21,7 +21,7 @@ import {
   Samosa, VadaPav, PavBhaji, PaniPuri, BhelPuri, Dhokla, Khandvi, FrenchFries, PaneerPakora, Chicken65, ChilliPotato, Momos,
   // Desserts
   GulabJamun, Rasgulla, Jalebi, Kheer, GajarKaHalwa, Kulfi, ChocolateBrownie, Cheesecake, Tiramisu, FruitSalad,
-} from '../../assets/images';
+} from "../../assets/images";
 
 // Image mapping for selection
 const foodImages = {
