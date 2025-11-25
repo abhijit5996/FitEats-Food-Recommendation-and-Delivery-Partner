@@ -12,7 +12,7 @@ import JeeraRice from './jeera-rice.jpg';
 import TandooriRoti from './tandoori-roti.jpg';
 import ButterNaan from './butter-naan.jpg';
 import PaneerBhurji from './paneer-bhurji.jpg';
-import RajmaChawal from './rajma-chawal.jpg';
+// import RajmaChawal from './rajma-chawal.jpg';
 import MushroomMatar from './mushroom-matar.jpg';
 import KadhiPakora from './kadhi-pakora.jpg';
 import StuffedParatha from './stuffed-paratha.jpg';
@@ -109,7 +109,7 @@ import FruitSalad from './fruit-salad.jpg';
 export {
   // North Indian
   PaneerTikkaMasala, PalakPaneer, DalMakhani, CholeBhature, AlooGobi, MalaiKofta, NavratanKorma, ShahiPaneer,
-  VegPulao, JeeraRice, TandooriRoti, ButterNaan, PaneerBhurji, RajmaChawal, MushroomMatar, KadhiPakora, StuffedParatha, VegetableBiryani,
+  VegPulao, JeeraRice, TandooriRoti, ButterNaan, PaneerBhurji, MushroomMatar, KadhiPakora, StuffedParatha, VegetableBiryani,
   // South Indian
   MasalaDosa, IdliSambar, MeduVada, Pongal, Uttapam, RavaDosa, BisiBeleBath, LemonRice, CurdRice, Avial, Poriyal, EggDosa,
   // Indo-Chinese

@@ -6,7 +6,7 @@ import { endpoints } from '../../config/api';
 import {
   // North Indian
   PaneerTikkaMasala, PalakPaneer, DalMakhani, CholeBhature, AlooGobi, MalaiKofta, NavratanKorma, ShahiPaneer,
-  VegPulao, JeeraRice, TandooriRoti, ButterNaan, PaneerBhurji, RajmaChawal, MushroomMatar, KadhiPakora, StuffedParatha, VegetableBiryani,
+  VegPulao, JeeraRice, TandooriRoti, ButterNaan, PaneerBhurji, MushroomMatar, KadhiPakora, StuffedParatha, VegetableBiryani,
   // South Indian
   MasalaDosa, IdliSambar, MeduVada, Pongal, Uttapam, RavaDosa, BisiBeleBath, LemonRice, CurdRice, Avial, Poriyal, EggDosa,
   // Indo-Chinese
@@ -39,7 +39,6 @@ const foodImages = {
   'tandoori-roti': TandooriRoti,
   'butter-naan': ButterNaan,
   'paneer-bhurji': PaneerBhurji,
-  'rajma-chawal': RajmaChawal,
   'mushroom-matar': MushroomMatar,
   'kadhi-pakora': KadhiPakora,
   'stuffed-paratha': StuffedParatha,
